@@ -27,13 +27,14 @@
 
 Checkpoints: `feat: content collections with typed schemas` → `feat: content registry and route resolver` → `feat: relation engine with inverse generation and semantic validation` → `test: content engine unit tests`
 
-## M2 — Kawruh (halaman pengetahuan kanonik)
+## M2 — Kawruh (halaman pengetahuan kanonik) ✅
 
-- [ ] Template `/kawruh/{slug}/` — design.md §76 (breadcrumb, eyebrow, title, short definition, body, Context Rail, Relation Strip, Lanjut dari sini, Sources)
-- [ ] Komponen: TopicLink, KnowledgeCard, RelationStrip, ContextRail, CatatanRasa, MitosKonteks, Breadcrumb, MetadataTags, SourceList — design.md §33–45
-- [ ] `/kawruh/` index + filter ringan native JS
-- [ ] Wiki-link `[[id|teks]]` di pipeline Markdown — link graph ≠ semantic graph
-- [ ] Related content ranking — PRD §20.7
+- [x] Template `/kawruh/{slug}/` — design.md §76 (breadcrumb, eyebrow, title, short definition, body, Context Rail, Relation Strip, Lanjut dari sini, Sources)
+- [x] Komponen: TopicLink, KnowledgeCard, RelationStrip, ContextRail, CatatanRasa, MitosKonteks, Breadcrumb, SourceList (metadata via eyebrow + Context Rail)
+- [x] `/kawruh/` index + filter ringan native JS
+- [x] Wiki-link `[[id|teks]]` di pipeline Markdown — link graph ≠ semantic graph; wiki-link hanya menunjuk entri published
+- [x] Related content ranking — PRD §20.7
+- [x] Inverse relation tidak menghasilkan backlink published→draft (AGENTS §65)
 
 Checkpoints: `feat: knowledge entry page template` → `feat: editorial knowledge components` → `feat: kawruh index with filters` → `feat: wiki-style internal links` → `feat: related content ranking`
 

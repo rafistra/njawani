@@ -1,0 +1,88 @@
+---
+/**
+ * Source list (AGENTS.md §66): sumber reusable ditampilkan ringkas;
+ * detail bibliografis tinggal di object source, tidak diduplikasi.
+ */
+import type { SourceObject } from "../../lib/content/types";
+
+interface Props {
+  sources: SourceObject[];
+}
+
+const { sources } = Astro.props;
+---
+
+{
+  sources.length > 0 && (
+    <section class="sources" aria-label="Sumber">
+      <h2 class="heading">Sumber</h2>
+      <ol>
+        {sources.map((source) => (
+          <li>
+            {source.author && <span class="author">{source.author}. </span>}
+            <span class="title">{source.title}</span>
+            {source.year && <span class="meta"> ({source.year})</span>}
+            {source.publisher && <span class="meta"> — {source.publisher}</span>}
+            {source.url && (
+              <a class="url" href={source.url} rel="noopener">
+                Lihat sumber ↗
+              </a>
+            )}
+            {source.note && <span class="note">{source.note}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .sources {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-5);
+  }
+
+  .heading {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  ol {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding-left: var(--space-5);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .title {
+    font-style: italic;
+  }
+
+  .meta,
+  .note {
+    color: var(--color-text-muted);
+  }
+
+  .note {
+    display: block;
+    font-size: 0.8125rem;
+  }
+
+  .url {
+    margin-left: var(--space-2);
+    color: var(--color-interactive);
+    text-decoration: none;
+  }
+
+  .url:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

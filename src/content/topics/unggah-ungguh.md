@@ -19,6 +19,11 @@ sources:
   - poerwadarminta-baoesastra-jawa
   - kbbi
 status: published
+catatan_rasa: >
+  Unggah-ungguh sering disederhanakan sebagai "bahasa formal versus bahasa
+  kasual". Padahal intinya bukan formalitas, melainkan penempatan diri dalam
+  relasi sosial: memilih ragam adalah cara menghormati lawan bicara
+  sekaligus menyatakan posisi diri sendiri.
 ---
 
 ## Pengertian
@@ -29,6 +34,3 @@ Unggah-ungguh adalah sistem tingkat tutur dalam bahasa Jawa: pemilihan kosakata 
 
 Pemilihan ragam tidak ditentukan oleh formal-tidaknya suasana semata, melainkan oleh relasi sosial: usia, kedudukan, jarak keakraban, dan rasa hormat. Karena itu kalimat yang sama dapat diucapkan dengan ragam berbeda kepada orang yang berbeda — berbicara dengan ayah, teman sebaya, atau pejabat desa menggunakan pilihan kosakata yang tidak sama.
 
-## Catatan Rasa
-
-Unggah-ungguh sering disederhanakan sebagai "bahasa formal versus bahasa kasual". Padahal intinya bukan formalitas, melainkan penempatan diri dalam relasi sosial: memilih ragam adalah cara menghormati lawan bicara sekaligus menyatakan posisi diri sendiri.

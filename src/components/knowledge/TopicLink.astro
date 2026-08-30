@@ -1,0 +1,59 @@
+---
+/**
+ * Signature component (design.md §33): link ke entri pengetahuan lain dengan
+ * konteks jenis/tema agar pengguna tahu ke mana ia akan pergi.
+ */
+import { entryContext } from "../../lib/content/labels";
+import { resolveEntryRoute } from "../../lib/content/routes";
+import type { ContentObject } from "../../lib/content/types";
+
+interface Props {
+  entry: ContentObject;
+}
+
+const { entry } = Astro.props;
+const href = resolveEntryRoute(entry);
+const context = entryContext(entry);
+---
+
+{
+  href ? (
+    <a class="topic-link" href={href} title={entry.shortDefinition}>
+      <span class="topic-link-title">{entry.title}</span>
+      <span class="topic-link-context">{context}</span>
+    </a>
+  ) : (
+    <span class="topic-link-title">{entry.title}</span>
+  )
+}
+
+<style>
+  .topic-link {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-2) 0;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .topic-link:hover .topic-link-title,
+  .topic-link:focus-visible .topic-link-title {
+    color: var(--color-interactive);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .topic-link-title {
+    color: var(--color-text);
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .topic-link-context {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+  }
+</style>

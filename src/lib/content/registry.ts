@@ -48,6 +48,8 @@ const KNOWN_KEYS = new Set([
   "sources",
   "status",
   "demo",
+  "catatan_rasa",
+  "mitos_konteks",
 ]);
 
 function asString(value: unknown): string | undefined {
@@ -88,6 +90,15 @@ function normalizeStatus(value: unknown, id: string): ContentStatus {
   return status as ContentStatus;
 }
 
+function normalizeMitosKonteks(value: unknown): ContentObject["mitosKonteks"] {
+  if (typeof value !== "object" || value === null) return undefined;
+  const data = value as Record<string, unknown>;
+  const kepercayaanPopuler = asString(data.kepercayaan_populer);
+  const konteks = asString(data.konteks);
+  if (!kepercayaanPopuler || !konteks) return undefined;
+  return { kepercayaanPopuler, konteks, catatan: asString(data.catatan) };
+}
+
 function normalizeEntry(raw: RawContentEntry): ContentObject {
   const { data } = raw;
   const type = asString(data.type);
@@ -113,6 +124,8 @@ function normalizeEntry(raw: RawContentEntry): ContentObject {
     sourceIds: toStringArray(data.sources),
     status: normalizeStatus(data.status, raw.id),
     demo: data.demo === true,
+    catatanRasa: asString(data.catatan_rasa),
+    mitosKonteks: normalizeMitosKonteks(data.mitos_konteks),
     extra: extractExtras(data),
   };
 }

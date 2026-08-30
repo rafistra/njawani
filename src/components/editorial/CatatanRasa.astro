@@ -1,0 +1,46 @@
+---
+/**
+ * Signature editorial component (design.md §43): menjelaskan nuansa makna
+ * dan konteks sosial yang tidak tertangkap terjemahan literal.
+ * Treatment: aksen Sogan, background lembut, tanpa icon warning.
+ */
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+const paragraphs = text.trim().split(/\n{2,}/);
+---
+
+<section class="catatan-rasa">
+  <h2 class="heading">Catatan Rasa</h2>
+  {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+</section>
+
+<style>
+  .catatan-rasa {
+    padding: var(--space-5) var(--space-5) var(--space-5) var(--space-6);
+    background: var(--color-surface);
+    border-left: 3px solid var(--color-brand-soft);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .heading {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--color-brand);
+  }
+
+  p {
+    margin: 0 0 var(--space-3);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+</style>

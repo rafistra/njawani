@@ -1,0 +1,72 @@
+---
+/**
+ * Breadcrumb berasal dari taxonomy metadata, bukan depth route (PRD §17.9,
+ * design.md §38). Mobile menampilkan satu langkah mundur saja.
+ */
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+const last = items[items.length - 1];
+---
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    {
+      items.slice(0, -1).map((item) => (
+        <li>
+          {item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}
+          <span class="separator" aria-hidden="true">
+            /
+          </span>
+        </li>
+      ))
+    }
+    <li aria-current="page">{last?.label}</li>
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-interactive);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .separator {
+    margin-left: var(--space-2);
+    color: var(--border-strong);
+  }
+
+  @media (max-width: 767px) {
+    /* Mobile: satu langkah mundur saja (design.md §38). */
+    .breadcrumb ol :global(li):not(:last-child) {
+      display: none;
+    }
+  }
+</style>

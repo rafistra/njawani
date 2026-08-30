@@ -1,0 +1,97 @@
+---
+/**
+ * Context Rail (design.md §39): orientasi jenis/wilayah/tema pada halaman
+ * pengetahuan desktop. Mobile dirender inline (layout parent yang mengatur).
+ */
+import { capitalize, TYPE_LABELS } from "../../lib/content/labels";
+import { resolveRouteById } from "../../lib/content/routes";
+import type { ContentRegistry } from "../../lib/content/registry";
+import type { ContentObject } from "../../lib/content/types";
+
+interface Props {
+  entry: ContentObject;
+  registry: ContentRegistry;
+}
+
+const { entry, registry } = Astro.props;
+
+const regions = entry.regionIds
+  .map((id) => registry.getEntry(id))
+  .filter((region): region is ContentObject => Boolean(region))
+  .map((region) => ({ title: region.title, href: resolveRouteById(registry, region.id) }));
+---
+
+<aside class="context-rail" aria-label="Konteks entri">
+  <h2 class="rail-heading">Konteks</h2>
+
+  <dl>
+    <div class="rail-item">
+      <dt>Jenis</dt>
+      <dd>{TYPE_LABELS[entry.type]}</dd>
+    </div>
+
+    {
+      regions.length > 0 && (
+        <div class="rail-item">
+          <dt>Wilayah</dt>
+          <dd>
+            {regions.map((region) => region.href ? <a href={region.href}>{region.title}</a> : <span>{region.title}</span>)}
+          </dd>
+        </div>
+      )
+    }
+
+    {
+      entry.themes.length > 0 && (
+        <div class="rail-item">
+          <dt>Tema</dt>
+          <dd>{entry.themes.map((theme) => capitalize(theme)).join(", ")}</dd>
+        </div>
+      )
+    }
+  </dl>
+</aside>
+
+<style>
+  .context-rail {
+    font-size: 0.9375rem;
+  }
+
+  .rail-heading {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  dl {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin: 0;
+  }
+
+  dt {
+    margin-bottom: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  dd a {
+    display: inline-block;
+    color: var(--color-interactive);
+    text-decoration: none;
+  }
+
+  dd a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

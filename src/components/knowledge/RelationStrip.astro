@@ -1,0 +1,113 @@
+---
+/**
+ * Signature component (design.md §40): relation dikelompokkan per tipe
+ * dengan label Indonesia dari relation registry.
+ */
+import { getRelationType } from "../../data/relation-types/relation-types";
+import { resolveEntryRoute } from "../../lib/content/routes";
+import type { ContentObject, ResolvedRelation } from "../../lib/content/types";
+
+interface Props {
+  relations: ResolvedRelation[];
+  /** Lookup entri target untuk judul + route. */
+  lookup: (id: string) => ContentObject | undefined;
+}
+
+const GROUP_ORDER = ["hierarchical", "language", "spatial", "cultural", "person-work", "contextual"] as const;
+
+const { relations, lookup }: Props = Astro.props;
+
+const groups = new Map<string, { label: string; targets: ContentObject[] }>();
+for (const relation of relations) {
+  const target = lookup(relation.target);
+  if (!target) continue;
+  const def = getRelationType(relation.type);
+  if (!def) continue;
+  const group = groups.get(relation.type) ?? { label: def.label, targets: [] };
+  group.targets.push(target);
+  groups.set(relation.type, group);
+}
+
+const sortedTypes = [...groups.keys()].sort((a, b) => {
+  const groupA = getRelationType(a)?.group ?? "contextual";
+  const groupB = getRelationType(b)?.group ?? "contextual";
+  return GROUP_ORDER.indexOf(groupA as (typeof GROUP_ORDER)[number]) -
+    GROUP_ORDER.indexOf(groupB as (typeof GROUP_ORDER)[number]);
+});
+---
+
+{
+  sortedTypes.length > 0 && (
+    <section class="relation-strip" aria-label="Relasi pengetahuan">
+      <h2 class="strip-heading">Berkaitan dengan</h2>
+      <div class="strip-groups">
+        {sortedTypes.map((type) => {
+          const group = groups.get(type)!;
+          return (
+            <div class="strip-group">
+              <h3 class="group-label">{group.label}</h3>
+              <ul>
+                {group.targets.map((target) => {
+                  const href = resolveEntryRoute(target);
+                  return (
+                    <li>
+                      {href ? <a href={href}>{target.title}</a> : <span>{target.title}</span>}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .relation-strip {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-6);
+  }
+
+  .strip-heading {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .strip-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .group-label {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  ul a {
+    color: var(--color-interactive);
+    text-decoration: none;
+  }
+
+  ul a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

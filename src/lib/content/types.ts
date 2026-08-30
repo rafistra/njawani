@@ -82,6 +82,14 @@ export interface ContentObject {
   status: ContentStatus;
   /** Entri demo/fixture untuk pengujian pipeline — tidak pernah dipublikasikan (AGENTS.md §93). */
   demo: boolean;
+  /** Catatan Rasa: nuansa makna/konteks yang tidak tertangkap terjemahan literal (PRD §10.4). */
+  catatanRasa?: string;
+  /** Mitos & Konteks: kepercayaan populer vs konteks historis (PRD §10.5). */
+  mitosKonteks?: {
+    kepercayaanPopuler: string;
+    konteks: string;
+    catatan?: string;
+  };
   /** Field spesifik type yang tidak dinormalisasi eksplisit (mis. reading_time, period). */
   extra: Record<string, unknown>;
 }

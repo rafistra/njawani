@@ -1,0 +1,76 @@
+---
+/**
+ * Knowledge Card (design.md §34): untuk entri yang harus berdiri sendiri —
+ * subtle border, tanpa heavy shadow, satu ajakan utama.
+ */
+import { entryContext } from "../../lib/content/labels";
+import { resolveEntryRoute } from "../../lib/content/routes";
+import type { ContentObject } from "../../lib/content/types";
+
+interface Props {
+  entry: ContentObject;
+}
+
+const { entry } = Astro.props;
+const href = resolveEntryRoute(entry);
+---
+
+{
+  href && (
+    <a class="knowledge-card" href={href} data-type={entry.type} data-themes={entry.themes.join(" ")}>
+      <span class="card-context">{entryContext(entry)}</span>
+      <span class="card-title">{entry.title}</span>
+      {entry.shortDefinition && <span class="card-definition">{entry.shortDefinition}</span>}
+      <span class="card-action">Jelajahi →</span>
+    </a>
+  )
+}
+
+<style>
+  .knowledge-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .knowledge-card:hover {
+    border-color: var(--border-default);
+  }
+
+  .card-context {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .card-title {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    line-height: 1.2;
+  }
+
+  .card-definition {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .card-action {
+    margin-top: auto;
+    color: var(--color-interactive);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+</style>

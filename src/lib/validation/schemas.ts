@@ -34,6 +34,16 @@ const coreObjectSchema = z.object({
   sources: z.array(z.string()).default([]),
   status: z.enum(CONTENT_STATUSES).default("draft"),
   demo: z.boolean().default(false),
+  /** Editorial primitive Catatan Rasa (PRD §10.4, design.md §43) — dirender sebagai komponen khas. */
+  catatan_rasa: z.string().optional(),
+  /** Mitos & Konteks untuk topik yang rawan bercampur kepercayaan vs konteks (PRD §10.5). */
+  mitos_konteks: z
+    .object({
+      kepercayaan_populer: z.string().min(1),
+      konteks: z.string().min(1),
+      catatan: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const topicSchema = coreObjectSchema.extend({ type: z.literal("topic") });

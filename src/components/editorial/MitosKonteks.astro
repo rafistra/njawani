@@ -1,0 +1,83 @@
+---
+/**
+ * Mitos & Konteks (design.md §44): kepercayaan populer vs konteks
+ * historis/antropologis. Tanpa framing adversarial "MYTH vs FACT".
+ */
+interface Props {
+  kepercayaanPopuler: string;
+  konteks: string;
+  catatan?: string;
+}
+
+function toParagraphs(text: string): string[] {
+  return text.trim().split(/\n{2,}/);
+}
+
+const { kepercayaanPopuler, konteks, catatan } = Astro.props;
+const kepercayaanParagraphs = toParagraphs(kepercayaanPopuler);
+const konteksParagraphs = toParagraphs(konteks);
+const catatanParagraphs = catatan ? toParagraphs(catatan) : [];
+---
+
+<section class="mitos-konteks">
+  <h2 class="heading">Mitos &amp; Konteks</h2>
+
+  <div class="block">
+    <h3 class="block-label">Kepercayaan populer</h3>
+    {kepercayaanParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+
+  <div class="block">
+    <h3 class="block-label">Konteks yang perlu diketahui</h3>
+    {konteksParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+
+  {
+    catatanParagraphs.length > 0 && (
+      <div class="block block-note">
+        <h3 class="block-label">Catatan sumber</h3>
+        {catatanParagraphs.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .mitos-konteks {
+    padding: var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .heading {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .block + .block {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .block-label {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0 0 var(--space-2);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+</style>

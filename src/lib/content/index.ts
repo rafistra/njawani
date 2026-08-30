@@ -12,7 +12,12 @@ import { formatIssues } from "../validation/errors";
 import { validateRegistry } from "../validation/semantic";
 import { createRegistry, type ContentRegistry, type RawContentEntry } from "./registry";
 
+let cachedRegistry: ContentRegistry | undefined;
+
+/** Registry dibangun sekali per proses build dan dipakai ulang oleh semua halaman. */
 export async function loadRegistry(): Promise<ContentRegistry> {
+  if (cachedRegistry) return cachedRegistry;
+
   const [topics, terms, traditions, regions, persons, works, artifacts, articles, modules, explorations, sources] =
     await Promise.all([
       getCollection("topics"),
@@ -58,5 +63,6 @@ export async function loadRegistry(): Promise<ContentRegistry> {
     );
   }
 
+  cachedRegistry = registry;
   return registry;
 }

@@ -23,6 +23,10 @@ sources:
   - kbbi
   - poerwadarminta-baoesastra-jawa
 status: published
+catatan_rasa: >
+  Menggunakan krama bukan sekadar "berbahasa formal". Krama menempatkan
+  lawan bicara pada posisi yang dihormati — kegagalan memilih ragam yang
+  tepat bisa terasa janggal secara sosial, bahkan ketika maksudnya baik.
 ---
 
 ## Pengertian
@@ -33,6 +37,3 @@ Krama adalah ragam halus dalam bahasa Jawa. Ragam ini digunakan untuk menunjukka
 
 Krama memiliki padanan kosakata terhadap ngoko, misalnya *dhahar* (krama) untuk *mangan* (ngoko, "makan"). Selain krama biasa, dikenal pula krama inggil untuk kosakata yang mengangkat lawan bicara, dan madya sebagai ragam tengah.
 
-## Catatan Rasa
-
-Menggunakan krama bukan sekadar "berbahasa formal". Krama menempatkan lawan bicara pada posisi yang dihormati — kegagalan memilih ragam yang tepat bisa terasa janggal secara sosial, bahkan ketika maksudnya baik.

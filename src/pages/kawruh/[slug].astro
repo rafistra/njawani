@@ -61,7 +61,7 @@ const sources = entry.sourceIds
   .filter((source): source is NonNullable<typeof source> => Boolean(source));
 ---
 
-<BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition}>
+<BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition} pagefind="index">
   <article class="entry">
     <header class="entry-header">
       <Breadcrumb
@@ -72,17 +72,25 @@ const sources = entry.sourceIds
         ]}
       />
       <p class="eyebrow">
-        {TYPE_LABELS[entry.type]}
-        {entry.themes.length > 0 && <span aria-hidden="true"> · </span>}
-        {entry.themes.length > 0 && capitalize(entry.themes[0])}
+        <span data-pagefind-filter="jenis" data-pagefind-meta="jenis">{TYPE_LABELS[entry.type]}</span>
+        {entry.themes.map((theme) => (
+          <>
+            <span aria-hidden="true"> · </span>
+            <span data-pagefind-filter="tema">{capitalize(theme)}</span>
+          </>
+        ))}
       </p>
-      <h1 class="entry-title">{entry.title}</h1>
+      <h1 class="entry-title" data-pagefind-weight="5">{entry.title}</h1>
       {entry.aksara && <p class="aksara" lang="jv">{entry.aksara}</p>}
-      {entry.shortDefinition && <p class="lead">{entry.shortDefinition}</p>}
+      {entry.shortDefinition && (
+        <p class="lead" data-pagefind-meta="definisi" data-pagefind-weight="3">
+          {entry.shortDefinition}
+        </p>
+      )}
     </header>
 
     <div class="entry-grid">
-      <div class="entry-main">
+      <div class="entry-main" data-pagefind-body>
         <div class="entry-body">
           <Content />
         </div>

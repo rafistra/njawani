@@ -8,6 +8,8 @@ import matter from "gray-matter";
 import { remarkWikilinks } from "./src/lib/content/remark-wikilinks";
 import { ROUTE_PREFIX } from "./src/lib/content/routes";
 
+import react from "@astrojs/react";
+
 // Deploy target: GitHub Pages project site (AGENTS.md §19).
 // https://rafistra.github.io/njawani/ — base harus sama dengan nama repo.
 // Jika nanti pindah ke custom domain / user site, sesuaikan SITE dan BASE_PATH.
@@ -47,7 +49,10 @@ export default defineConfig({
   site: SITE,
   base: BASE_PATH,
   trailingSlash: "always",
+
   markdown: {
     remarkPlugins: [[remarkWikilinks, { routeMap: buildWikiRouteMap() }]],
   },
+
+  integrations: [react()]
 });

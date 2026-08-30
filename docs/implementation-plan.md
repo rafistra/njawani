@@ -14,16 +14,16 @@
 - [x] Struktur folder PRD §13, design tokens design.md §87–88
 - [x] BaseLayout + halaman placeholder, workflow deploy
 
-## M1 — Content Engine Core (build-time backend)
+## M1 — Content Engine Core (build-time backend) ✅
 
-- [ ] `src/content.config.ts` — 11 koleksi glob loader
-- [ ] Schema: base umum + type-specific (discriminated union) — AGENTS §21
-- [ ] `src/lib/content/` — registry: `getEntry(id)`, `getByType()`, `getByRegion()`; stable ID ≠ slug
-- [ ] `src/lib/relations/` + `src/data/relation-types/` — registry relasi terkontrol, inverse otomatis, deteksi broken/self/duplicate/cycle/published→draft — PRD §20
-- [ ] `src/lib/routes/` — resolver ID → URL kanonik, sadar base path
-- [ ] Semantic validation saat build; critical error gagalkan build
-- [ ] Seed: entri demo bertanda + entri dasar Unggah-Ungguh
-- [ ] Vitest: registry / resolver / relation engine
+- [x] `src/content.config.ts` — 11 koleksi glob loader
+- [x] Schema: base umum + type-specific (discriminated union) — AGENTS §21
+- [x] `src/lib/content/` — registry: `getEntry(id)`, `getByType()`, `getByRegion()`; stable ID ≠ slug
+- [x] `src/lib/relations/` + `src/data/relation-types/` — registry relasi terkontrol, inverse otomatis, deteksi broken/self/duplicate/cycle/published→draft — PRD §20
+- [x] Route resolver ID → URL kanonik, sadar base path (`src/lib/content/routes.ts`)
+- [x] Semantic validation saat build; critical error gagalkan build
+- [x] Seed: entri demo bertanda + entri dasar Unggah-Ungguh (ngoko, krama, unggah-ungguh + 2 sumber nyata)
+- [x] Vitest: registry / resolver / relation engine / validasi konten nyata (20 test)
 
 Checkpoints: `feat: content collections with typed schemas` → `feat: content registry and route resolver` → `feat: relation engine with inverse generation and semantic validation` → `test: content engine unit tests`
 

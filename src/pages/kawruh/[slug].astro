@@ -1,0 +1,239 @@
+---
+/**
+ * Template halaman pengetahuan kanonik /kawruh/{slug}/ (PRD §17.2).
+ * Struktur mengikuti design.md §76: breadcrumb, eyebrow, title, short
+ * definition, body, Catatan Rasa, Mitos & Konteks, Context Rail,
+ * Relation Strip, Lanjut dari sini, Sources.
+ */
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import CatatanRasa from "../../components/editorial/CatatanRasa.astro";
+import ContextRail from "../../components/knowledge/ContextRail.astro";
+import MitosKonteks from "../../components/editorial/MitosKonteks.astro";
+import RelatedContent from "../../components/knowledge/RelatedContent.astro";
+import RelationStrip from "../../components/knowledge/RelationStrip.astro";
+import SourceList from "../../components/knowledge/SourceList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import { capitalize, TYPE_LABELS } from "../../lib/content/labels";
+import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
+import { getRelatedContent } from "../../lib/relations/related";
+import { KNOWLEDGE_TYPES, type ContentObject } from "../../lib/content/types";
+
+export async function getStaticPaths() {
+  const registry = await loadRegistry();
+
+  // getStaticPaths dievaluasi di konteks modul terpisah — konstanta lokal di sini.
+  const knowledgeCollections = ["topics", "terms", "traditions", "persons", "works", "artifacts"] as const;
+  const rawEntries = (
+    await Promise.all(knowledgeCollections.map((name) => getCollection(name)))
+  ).flat();
+  const rawById = new Map(rawEntries.map((raw) => [raw.id, raw]));
+
+  const knowledge = registry
+    .getPublished()
+    .filter((entry) => (KNOWLEDGE_TYPES as readonly string[]).includes(entry.type));
+
+  return knowledge.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry, raw: rawById.get(entry.id)! },
+  }));
+}
+
+type KnowledgeCollection = "topics" | "terms" | "traditions" | "persons" | "works" | "artifacts";
+
+interface Props {
+  entry: ContentObject;
+  raw: CollectionEntry<KnowledgeCollection>;
+}
+
+const { entry, raw } = Astro.props;
+const registry = await loadRegistry();
+const { Content } = await render(raw);
+
+const graph = buildRelationGraph(registry);
+const relations = getRelations(graph, entry.id);
+const related = getRelatedContent(graph, registry, entry.id, 4);
+const sources = entry.sourceIds
+  .map((id) => registry.getSource(id))
+  .filter((source): source is NonNullable<typeof source> => Boolean(source));
+---
+
+<BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition}>
+  <article class="entry">
+    <header class="entry-header">
+      <Breadcrumb
+        items={[
+          { label: "Kawruh", href: "/kawruh/" },
+          { label: TYPE_LABELS[entry.type] },
+          { label: entry.title },
+        ]}
+      />
+      <p class="eyebrow">
+        {TYPE_LABELS[entry.type]}
+        {entry.themes.length > 0 && <span aria-hidden="true"> · </span>}
+        {entry.themes.length > 0 && capitalize(entry.themes[0])}
+      </p>
+      <h1 class="entry-title">{entry.title}</h1>
+      {entry.aksara && <p class="aksara" lang="jv">{entry.aksara}</p>}
+      {entry.shortDefinition && <p class="lead">{entry.shortDefinition}</p>}
+    </header>
+
+    <div class="entry-grid">
+      <div class="entry-main">
+        <div class="entry-body">
+          <Content />
+        </div>
+
+        {entry.catatanRasa && <CatatanRasa text={entry.catatanRasa} />}
+
+        {entry.mitosKonteks && (
+          <MitosKonteks
+            kepercayaanPopuler={entry.mitosKonteks.kepercayaanPopuler}
+            konteks={entry.mitosKonteks.konteks}
+            catatan={entry.mitosKonteks.catatan}
+          />
+        )}
+
+        <RelationStrip relations={relations} lookup={(id: string) => registry.getEntry(id)} />
+        <RelatedContent items={related} />
+        <SourceList sources={sources} />
+      </div>
+
+      <ContextRail entry={entry} registry={registry} />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .entry {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  .eyebrow {
+    margin: var(--space-5) 0 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .entry-title {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem); /* H1 — design.md §14 */
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .aksara {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-javanese);
+    font-size: 1.375rem;
+    color: var(--color-brand);
+  }
+
+  .lead {
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem; /* Intro 20px — design.md §15 */
+    line-height: 1.55;
+    color: var(--color-text);
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    margin-top: var(--space-7);
+  }
+
+  @media (min-width: 1024px) {
+    /* Knowledge page: 8 kolom utama + 4 kolom konteks — design.md §22 */
+    .entry-grid {
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: var(--space-8);
+    }
+  }
+
+  .entry-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: var(--container-reading);
+  }
+
+  /* Typografi body Markdown — design.md §15–16, §30 */
+  .entry-body :global(h2) {
+    margin: var(--space-7) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .entry-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .entry-body :global(h3) {
+    margin: var(--space-6) 0 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .entry-body :global(p) {
+    margin: var(--space-4) 0 0;
+    line-height: 1.625;
+  }
+
+  .entry-body :global(h2 + p),
+  .entry-body :global(h3 + p) {
+    margin-top: var(--space-3);
+  }
+
+  .entry-body :global(ul),
+  .entry-body :global(ol) {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-5);
+  }
+
+  .entry-body :global(li) {
+    margin-top: var(--space-2);
+  }
+
+  .entry-body :global(a) {
+    color: var(--color-interactive);
+    text-decoration: underline;
+    text-decoration-color: var(--border-default);
+    text-underline-offset: 3px;
+  }
+
+  .entry-body :global(a:hover) {
+    text-decoration-color: var(--color-interactive);
+  }
+
+  .entry-body :global(blockquote) {
+    margin: var(--space-5) 0 0;
+    padding-left: var(--space-5);
+    border-left: 3px solid var(--border-subtle);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    color: var(--color-text);
+  }
+
+  .entry-body :global(blockquote p) {
+    margin-top: var(--space-2);
+  }
+
+  @media (min-width: 1024px) {
+    .entry-body :global(h2) {
+      margin-top: var(--space-8);
+    }
+  }
+</style>

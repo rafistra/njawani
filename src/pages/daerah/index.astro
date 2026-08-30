@@ -1,0 +1,58 @@
+---
+/**
+ * Indeks Daerah (PRD §8.2): peta budaya sebagai navigator + daftar
+ * wilayah. Fallback daftar selalu tampil di bawah peta.
+ */
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import CulturalMap from "../../components/knowledge/CulturalMap.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+
+const registry = await loadRegistry();
+const regions = registry
+  .getPublished()
+  .filter((entry) => entry.type === "region")
+  .sort((a, b) => a.title.localeCompare(b.title, "id"));
+---
+
+<BaseLayout
+  title="Daerah — Njawani"
+  description="Jelajahi budaya Jawa berdasarkan wilayah: dari Banyumas hingga Osing."
+>
+  <div class="daerah">
+    <header class="page-header">
+      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Daerah" }]} />
+      <h1>Daerah</h1>
+      <p class="lead">
+        Budaya Jawa tidak tunggal. Jelajahi wilayah-wilayah budaya — bahasa,
+        tradisi, dan seninya — dari barat hingga ujung timur pulau.
+      </p>
+    </header>
+
+    <CulturalMap regions={regions} />
+  </div>
+</BaseLayout>
+
+<style>
+  .daerah {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  h1 {
+    margin: var(--space-5) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    max-width: var(--container-reading);
+    margin: var(--space-4) 0 var(--space-7);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+</style>

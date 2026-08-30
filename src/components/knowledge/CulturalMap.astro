@@ -1,0 +1,134 @@
+---
+/**
+ * Cultural Map (PRD §22, design.md §59): navigator, bukan database UI.
+ * SVG statis dengan <a> native — tanpa JavaScript, hover pakai <title>,
+ * dan daftar wilayah di bawahnya adalah fallback + aksesibilitas.
+ * Batas budaya ditampilkan sebagai penanda skematik, bukan poligon klaim.
+ */
+import { JAVA_OUTLINE_PATH, JAVA_VIEWBOX, REGION_MARKERS } from "../../data/regions/map";
+import { resolveEntryRoute } from "../../lib/content/routes";
+import type { ContentObject } from "../../lib/content/types";
+
+interface Props {
+  regions: ContentObject[];
+}
+
+const { regions } = Astro.props;
+
+const markers = REGION_MARKERS.map((marker) => {
+  const region = regions.find((entry) => entry.id === marker.id);
+  if (!region) return undefined;
+  return { ...marker, region, href: resolveEntryRoute(region) };
+}).filter((marker): marker is NonNullable<typeof marker> => Boolean(marker));
+---
+
+<figure class="cultural-map">
+  <svg
+    viewBox={`0 0 ${JAVA_VIEWBOX.width} ${JAVA_VIEWBOX.height}`}
+    role="img"
+    aria-label="Peta skematik wilayah budaya Jawa"
+  >
+    <title>Wilayah budaya Jawa — peta skematik, bukan batas administratif</title>
+    <path class="island" d={JAVA_OUTLINE_PATH} />
+    {
+      markers.map((marker) => (
+        <a href={marker.href} class="marker-link">
+          <g transform={`translate(${marker.x} ${marker.y})`}>
+            <title>{marker.region.title}</title>
+            <circle class="marker" r="7" />
+            <circle class="marker-dot" r="2.5" />
+            <text class="marker-label" y="-14" text-anchor="middle">
+              {marker.region.title}
+            </text>
+          </g>
+        </a>
+      ))
+    }
+  </svg>
+
+  <figcaption>
+    Peta skematik — penanda wilayah budaya, bukan batas administratif.
+  </figcaption>
+
+  <ul class="map-list" aria-label="Daftar wilayah budaya">
+    {
+      markers.map((marker) => (
+        <li>
+          <a href={marker.href}>{marker.region.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .cultural-map svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .island {
+    fill: var(--color-surface-soft);
+    stroke: var(--border-default);
+    stroke-width: 1.5;
+  }
+
+  .marker {
+    fill: var(--color-brand);
+    opacity: 0.85;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+  }
+
+  .marker-dot {
+    fill: var(--color-canvas);
+  }
+
+  .marker-label {
+    fill: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .marker-link:hover .marker,
+  .marker-link:focus-visible .marker {
+    opacity: 1;
+  }
+
+  .marker-link:focus-visible {
+    outline: none;
+  }
+
+  .marker-link:focus-visible .marker {
+    stroke: var(--color-interactive);
+    stroke-width: 3;
+    opacity: 1;
+  }
+
+  figcaption {
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .map-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+
+  .map-list a {
+    color: var(--color-interactive);
+    text-decoration: none;
+  }
+
+  .map-list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

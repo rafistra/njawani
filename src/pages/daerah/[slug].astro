@@ -1,0 +1,243 @@
+---
+/**
+ * Template halaman region /daerah/{slug}/ (PRD §17.3, design.md §78):
+ * ringkasan budaya, konten wilayah, pengetahuan terkait wilayah,
+ * catatan batas budaya, dan daerah terkait.
+ */
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import CatatanRasa from "../../components/editorial/CatatanRasa.astro";
+import CulturalMap from "../../components/knowledge/CulturalMap.astro";
+import RelatedContent from "../../components/knowledge/RelatedContent.astro";
+import TopicLink from "../../components/knowledge/TopicLink.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
+import type { ContentObject } from "../../lib/content/types";
+
+export async function getStaticPaths() {
+  const registry = await loadRegistry();
+  const rawRegions = await getCollection("regions");
+  const rawById = new Map(rawRegions.map((raw) => [raw.id, raw]));
+
+  return registry
+    .getPublished()
+    .filter((entry) => entry.type === "region")
+    .map((entry) => ({
+      params: { slug: entry.slug },
+      props: { entry, raw: rawById.get(entry.id)! },
+    }));
+}
+
+interface Props {
+  entry: ContentObject;
+  raw: CollectionEntry<"regions">;
+}
+
+const { entry, raw } = Astro.props;
+const registry = await loadRegistry();
+const { Content } = await render(raw);
+
+const graph = buildRelationGraph(registry);
+const relations = getRelations(graph, entry.id);
+
+// Pengetahuan yang terhubung wilayah ini: field regions + relation spatial.
+const associated = new Map<string, ContentObject>();
+for (const candidate of registry.getPublished()) {
+  if (candidate.regionIds.includes(entry.id) && candidate.id !== entry.id) {
+    associated.set(candidate.id, candidate);
+  }
+}
+for (const relation of relations) {
+  const target = registry.getEntry(relation.target);
+  if (target && target.status === "published" && target.type !== "region") {
+    associated.set(target.id, target);
+  }
+}
+
+const allRegions = registry.getPublished().filter((candidate) => candidate.type === "region");
+const relatedRegions = allRegions
+  .filter((candidate) => candidate.id !== entry.id)
+  .sort((a, b) => a.title.localeCompare(b.title, "id"));
+---
+
+<BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition} pagefind="index">
+  <article class="region">
+    <header class="region-header">
+      <Breadcrumb
+        items={[{ label: "Beranda", href: "/" }, { label: "Daerah", href: "/daerah/" }, { label: entry.title }]}
+      />
+      <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">Daerah</p>
+      <h1 class="region-title" data-pagefind-weight="5">{entry.title}</h1>
+      {entry.shortDefinition && (
+        <p class="lead" data-pagefind-meta="definisi" data-pagefind-weight="3">{entry.shortDefinition}</p>
+      )}
+    </header>
+
+    <div class="region-grid">
+      <div class="region-main" data-pagefind-body>
+        <div class="region-body">
+          <Content />
+        </div>
+
+        {entry.catatanRasa && <CatatanRasa text={entry.catatanRasa} />}
+
+        {
+          associated.size > 0 && (
+            <section class="associated" aria-label="Pengetahuan dari wilayah ini">
+              <h2>Pengetahuan dari wilayah ini</h2>
+              <ul>
+                {[...associated.values()].map((candidate) => (
+                  <li>
+                    <TopicLink entry={candidate} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </div>
+
+      <aside class="region-side">
+        <CulturalMap regions={allRegions} />
+      </aside>
+    </div>
+
+    {
+      relatedRegions.length > 0 && (
+        <section class="related-regions" aria-label="Daerah lain">
+          <h2>Daerah lain</h2>
+          <ul>
+            {relatedRegions.map((candidate) => (
+              <li>
+                <a href={`/daerah/${candidate.slug}/`}>{candidate.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .region {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  .eyebrow {
+    margin: var(--space-5) 0 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .region-title {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    max-width: var(--container-reading);
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .region-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    margin-top: var(--space-7);
+  }
+
+  @media (min-width: 1024px) {
+    .region-grid {
+      grid-template-columns: minmax(0, 1fr) 360px;
+    }
+  }
+
+  .region-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: var(--container-reading);
+  }
+
+  .region-body :global(h2) {
+    margin: var(--space-7) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .region-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .region-body :global(p) {
+    margin: var(--space-4) 0 0;
+    line-height: 1.625;
+  }
+
+  .region-body :global(h2 + p) {
+    margin-top: var(--space-3);
+  }
+
+  .region-body :global(a) {
+    color: var(--color-interactive);
+    text-decoration: underline;
+    text-decoration-color: var(--border-default);
+    text-underline-offset: 3px;
+  }
+
+  .associated,
+  .related-regions {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-6);
+  }
+
+  .associated h2,
+  .related-regions h2 {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .associated ul,
+  .related-regions ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related-regions {
+    margin-top: var(--space-7);
+  }
+
+  .related-regions a {
+    color: var(--color-interactive);
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .related-regions a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

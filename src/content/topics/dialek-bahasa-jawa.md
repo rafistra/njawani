@@ -62,7 +62,7 @@ Perbedaan dialek tumbuh dari sejarah dan geografi: pusat budaya Mataram di Surak
 Beberapa dialek yang paling sering dibedakan:
 
 - **Dialek Mataraman** (Surakarta–Yogyakarta), dasar ragam baku — lihat [[dialek-mataraman]]
-- **Dialek Ngapak** (Banyumas dan sekitarnya), terkenal lewat ujaran "apak" — lihat [[dialek-ngapak]]
+- **Dialek Ngapak** (Banyumas dan sekitarnya), dijuluki dari kata tanya "ngapa" — lihat [[dialek-ngapak]]
 - **Dialek Arekan** (Surabaya dan Jawa Timur timur laut), lugas dan cepat — lihat [[dialek-arekan]]
 - **Dialek Madiunan** (Madiun–Kediri), ragam transisi antara Solo dan Arekan — lihat [[dialek-madiunan]]
 - **Dialek Semarangan** (Semarang dan pantura tengah) — lihat [[dialek-semarangan]]

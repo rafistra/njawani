@@ -21,6 +21,8 @@ regions:
   - yogyakarta
 sources:
   - wikipedia-dialek-bahasa-jawa
+  - wikipedia-bahasa-jawa-madiun-kediri
+  - wikipedia-bahasa-jawa-surabaya
 status: published
 reviewed: 2026-08-31
 catatan_rasa: >
@@ -34,13 +36,31 @@ catatan_rasa: >
 
 Dialek Mataraman adalah ragam bahasa Jawa yang tumbuh di pusat bekas Kerajaan Mataram — Surakarta dan Yogyakarta beserta sekitarnya. Bersama Yogyakarta, ragam Surakarta menjadi dasar bahasa Jawa baku yang diajarkan di sekolah dan dipakai dalam media.
 
-Sebutan "dialek O" kadang melekat pada ragam ini karena salah satu cirinya yang paling terdengar: vokal o yang jelas pada kata seperti *ora* (tidak) — bunyi yang membedakannya dari dialek "A" seperti Banyumasan yang mengucapkannya *apak*.
+Sebutan "dialek O" kadang melekat pada ragam ini karena salah satu cirinya yang paling terdengar: vokal o yang jelas pada kata seperti *ora* (tidak) — bunyi yang membedakannya dari dialek "A" di barat seperti Banyumasan, yang justru menyimpan bunyi "a" yang tegas.
 
 ## Konteks
 
 Kedudukan Mataraman sebagai dasar ragam baku lahir dari sejarah, bukan dari "kebenaran" bahasa: dua pusat keraton mewariskan tutur istana yang kemudian menjadi acuan kamus dan buku teks — termasuk kamus Poerwadarminta yang menjadi sumber banyak daftar istilah di Njawani.
 
 Antara Solo dan Yogyakarta pun ada perbedaan kecil yang dikenali penuturnya, misalnya pilihan kata krama untuk "selagi" dan "lima" yang berbeda di antara kedua kota. Perbedaan sesempit ini justru menjadi penanda asal daerah yang dibanggakan.
+
+## Contoh dan perbandingan
+
+Tabel berikut membandingkan beberapa kata pada ragam ini dengan dua tetangga terdekatnya:
+
+| Arti | Mataraman | Madiunan | Arekan |
+| --- | --- | --- | --- |
+| kalau | *yen* | *nek*, *lek* | *lek* |
+| kenapa | *ngapa* | *nyapa*, *napa* | *lapo* |
+| dapat | *kena* | *kenek* | *kenek* |
+| selesai | *bar*, *rampung* | *bar*, *mari* | *mari* |
+| anak | *bocah* | *bocah*, *cah* | *arek* |
+| bersembunyi | *umpetan* | *dhelikan* | *singidan* |
+| kamar mandi | *kolah* | *jedhing* | — |
+
+Terlihat polanya: ke arah timur, *mari* dan *kenek* dipakai bersama oleh dua dialek sekaligus, sementara *yen* hanya hidup di pusat Mataram — di timur ia berganti *nek* atau *lek*.
+
+Antara Solo dan Yogyakarta sendiri pun ada variasi kecil yang langsung dikenali penuturnya, misalnya krama *manawi* di Solo berpadan *menawi* di Yogyakarta untuk "selagi".
 
 ## Mataraman yang lain
 

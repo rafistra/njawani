@@ -16,13 +16,27 @@ themes:
   - bahasa
 sources:
   - wikipedia-dialek-bahasa-jawa
+  - wikipedia-bahasa-jawa-semarang
 status: published
 reviewed: 2026-08-31
 ---
 
 ## Pengertian
 
-Dialek Semarangan adalah ragam bahasa Jawa yang dituturkan di Semarang dan pantai utara Jawa Tengah bagian tengah — wilayah yang secara geografis terletak di tengah-tengah antara ragam baku di selatan dan ragam-ragam pantura barat di sebelahnya.
+Dialek Semarangan adalah ragam bahasa Jawa yang dituturkan di Semarang dan pantai utara Jawa Tengah bagian tengah — wilayah eks-Keresidenan Semarang yang kini sering disebut Kedungsepur: Kendal, Demak, Ungaran/Salatiga, Semarang, hingga Purwodadi. Sekitar 6,5 juta orang menuturkannya.
+
+## Contoh dan perbedaan
+
+Ujaran dan partikel khas yang tidak ditemukan pada ragam baku:
+
+- *Yo orak to* — "ya, tidak" (baku: *yo ora*)
+- *He'e* — "ya"; lebih disukai daripada *yo*
+- *Piyé, jal?* — "bagaimana, coba?"
+- *Sediluk*, *diluk*, atau singkatnya *sek* — "sebentar" (baku: *sedelo*)
+- *Apik, ik!* — "alangkah indahnya!" Partikel *ik* di akhir ujaran menyatakan kekaguman sekaligus kecewa: *wonge lungo, ik* — "sayang, orangnya pergi"
+- *Semeh* berarti "ibu" dan *sebeh* "ayah" — padahal di ragam lain, *sebeh* justru berarti "mantra"
+
+Kota ini juga terkenal kreatif memperpendek ujaran: *Bang-Jo* untuk lampu merah (dari *lampu abang-ijo*) dan *mang-pi* untuk uang limaan (dari *limang rupiyah*).
 
 ## Konteks
 

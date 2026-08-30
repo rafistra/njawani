@@ -38,6 +38,7 @@ describe("createRegistry", () => {
     expect(entry?.slug).toBe("tepa-slira");
     expect(entry?.aliases).toEqual(["tepa selira"]);
     expect(entry?.status).toBe("draft");
+    expect(entry?.reviewed).toBeUndefined();
     expect(entry?.demo).toBe(false);
     expect(entry?.searchTerms).toEqual([]);
     expect(entry?.relations).toEqual([{ type: "related_to", target: "unggah-ungguh" }]);
@@ -73,5 +74,39 @@ describe("createRegistry", () => {
   it("melempar error untuk tipe atau status yang tidak dikenal", () => {
     expect(() => createRegistry([knowledgeEntry("rusak", { type: "makhluk" })])).toThrow(/tipe 'makhluk' tidak dikenal/);
     expect(() => createRegistry([knowledgeEntry("rusak", { status: "hilang" })])).toThrow(/status 'hilang' tidak dikenal/);
+  });
+
+  it("menormalkan section untuk tipe collection dan menolak section tak dikenal", () => {
+    const registry = createRegistry([
+      {
+        collection: "collections",
+        id: "arane-kembang",
+        data: {
+          type: "collection",
+          title: "Arane Kembang",
+          short_definition: "Daftar nama bunga.",
+          section: "tetawuhan",
+          status: "review",
+          reviewed: "2026-08-31",
+          sources: ["sumber-1"],
+        },
+      },
+      sourceEntry("sumber-1"),
+    ]);
+
+    const entry = registry.getEntry("arane-kembang");
+    expect(entry?.section).toBe("tetawuhan");
+    expect(entry?.type).toBe("collection");
+    expect(entry?.reviewed).toBe("2026-08-31");
+
+    expect(() =>
+      createRegistry([
+        {
+          collection: "collections",
+          id: "rusak",
+          data: { type: "collection", title: "Rusak", short_definition: "x", section: "dongeng" },
+        },
+      ]),
+    ).toThrow(/section 'dongeng' tidak dikenal/);
   });
 });

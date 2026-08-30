@@ -39,6 +39,15 @@ Markdown (src/content/*)
   lewat `data-pagefind-ignore` (prop `pagefind` di BaseLayout).
 - **Konten**: hanya `status: published` yang menghasilkan route/search/relasi
   publik; entri demo bertanda `demo: true` + `status: draft`.
+- **Tanggal kurasi**: field frontmatter opsional `reviewed` (ISO) menandai
+  kapan entri terakhir diperiksa editorial — ditampilkan halus di Context
+  Rail dengan format Indonesia lengkap ("31 Agu 2026"). Bukan timestamp
+  modifikasi otomatis; tanggal modifikasi tetap menjadi ranah git.
+  untuk daftar istilah terkurasi. Kelompok A–D ditandai field `section`
+  (enum `COLLECTION_SECTIONS`), labelnya di `SECTION_LABELS`. Halaman induk
+  `rupa-rupa-kawruh` (topic) menampilkan anaknya lewat relasi `part_of` →
+  inverse `contains`; hanya anak `published` yang tampil, sehingga tautan
+  ke entri berstatus review/draft tidak pernah muncul.
 
 ## Perintah
 

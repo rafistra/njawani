@@ -4,7 +4,7 @@
  */
 import { z } from "astro/zod";
 
-import { CONTENT_STATUSES, ENTRY_TYPES, KNOWLEDGE_TYPES } from "../content/types";
+import { COLLECTION_SECTIONS, CONTENT_STATUSES, ENTRY_TYPES, KNOWLEDGE_TYPES } from "../content/types";
 
 /** Stable ID: kebab-case, tidak bergantung folder/URL (PRD §15.2). */
 export const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -33,6 +33,17 @@ const coreObjectSchema = z.object({
   relations: z.array(authoredRelationSchema).default([]),
   sources: z.array(z.string()).default([]),
   status: z.enum(CONTENT_STATUSES).default("draft"),
+  /**
+   * Tanggal pemeriksaan editorial terakhir — opsional, ditampilkan lengkap di Context Rail.
+   * Menerima Date karena YAML mem-parse `2026-08-31` tanpa kutip sebagai timestamp;
+   * registry menormalkan keduanya menjadi string ISO.
+   */
+  reviewed: z
+    .union([
+      z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "reviewed harus tanggal ISO, mis. 2026-08-31"),
+      z.date(),
+    ])
+    .optional(),
   demo: z.boolean().default(false),
   /** Editorial primitive Catatan Rasa (PRD §10.4, design.md §43) — dirender sebagai komponen khas. */
   catatan_rasa: z.string().optional(),
@@ -72,6 +83,16 @@ export const explorationSchema = coreObjectSchema.extend({
   steps: z.array(explorationStepSchema).default([]),
 });
 
+/**
+ * Daftar istilah terkurasi Rupa-rupa Kawruh (AGENTS.md §11: Collection —
+ * kurasi objek). Kelompok A–D wajib dan terkontrol; isi daftar ditulis di
+ * Markdown body (AGENTS.md §12-13), bukan frontmatter.
+ */
+export const collectionSchema = coreObjectSchema.extend({
+  type: z.literal("collection"),
+  section: z.enum(COLLECTION_SECTIONS),
+});
+
 /** Sumber pustaka: bentuk berbeda, tanpa status/relasi/region — reference-only (AGENTS.md §66). */
 export const sourceSchema = z.object({
   id: z.string().regex(ID_PATTERN, "ID harus kebab-case"),
@@ -99,6 +120,7 @@ export const SCHEMAS_BY_COLLECTION = {
   articles: articleSchema,
   modules: moduleSchema,
   explorations: explorationSchema,
+  collections: collectionSchema,
   sources: sourceSchema,
 } as const;
 

@@ -16,6 +16,7 @@ export const ROUTE_PREFIX: Record<EntryType, string | null> = {
   person: "kawruh",
   work: "kawruh",
   artifact: "kawruh",
+  collection: "kawruh",
   region: "daerah",
   module: "sinau",
   exploration: "jelajah",

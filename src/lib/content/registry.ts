@@ -3,6 +3,7 @@
  * internal. UI tidak membaca Markdown/frontmatter secara langsung.
  */
 import {
+  COLLECTION_SECTIONS,
   CONTENT_STATUSES,
   ENTRY_TYPES,
   type AuthoredRelation,
@@ -47,10 +48,12 @@ const KNOWN_KEYS = new Set([
   "relations",
   "sources",
   "status",
+  "reviewed",
   "demo",
   "catatan_rasa",
   "mitos_konteks",
   "steps",
+  "section",
 ]);
 
 function asString(value: unknown): string | undefined {
@@ -113,6 +116,26 @@ function normalizeSteps(value: unknown): ContentObject["steps"] {
   return steps.length > 0 ? steps : undefined;
 }
 
+function normalizeSection(value: unknown, id: string): ContentObject["section"] {
+  const section = asString(value);
+  if (!section) return undefined;
+  if (!(COLLECTION_SECTIONS as readonly string[]).includes(section)) {
+    throw new Error(
+      `[registry] '${id}': section '${section}' tidak dikenal. Section valid: ${COLLECTION_SECTIONS.join(", ")}.`,
+    );
+  }
+  return section as ContentObject["section"];
+}
+
+/**
+ * YAML mem-parse tanggal ISO tanpa kutip sebagai objek Date — normalkan
+ * menjadi string ISO agar `reviewed` selalu string di ContentObject.
+ */
+function normalizeReviewed(value: unknown): string | undefined {
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return asString(value);
+}
+
 function normalizeEntry(raw: RawContentEntry): ContentObject {
   const { data } = raw;
   const type = asString(data.type);
@@ -137,10 +160,12 @@ function normalizeEntry(raw: RawContentEntry): ContentObject {
     relations: normalizeRelations(data.relations),
     sourceIds: toStringArray(data.sources),
     status: normalizeStatus(data.status, raw.id),
+    reviewed: normalizeReviewed(data.reviewed),
     demo: data.demo === true,
     catatanRasa: asString(data.catatan_rasa),
     mitosKonteks: normalizeMitosKonteks(data.mitos_konteks),
     steps: normalizeSteps(data.steps),
+    section: normalizeSection(data.section, raw.id),
     extra: extractExtras(data),
   };
 }

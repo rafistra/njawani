@@ -3,7 +3,7 @@
  * Context Rail (design.md §39): orientasi jenis/wilayah/tema pada halaman
  * pengetahuan desktop. Mobile dirender inline (layout parent yang mengatur).
  */
-import { capitalize, TYPE_LABELS } from "../../lib/content/labels";
+import { capitalize, formatReviewDate, SECTION_LABELS, TYPE_LABELS } from "../../lib/content/labels";
 import { resolveRouteById } from "../../lib/content/routes";
 import type { ContentRegistry } from "../../lib/content/registry";
 import type { ContentObject } from "../../lib/content/types";
@@ -31,6 +31,15 @@ const regions = entry.regionIds
     </div>
 
     {
+      entry.section && (
+        <div class="rail-item">
+          <dt>Kelompok</dt>
+          <dd>{SECTION_LABELS[entry.section]}</dd>
+        </div>
+      )
+    }
+
+    {
       regions.length > 0 && (
         <div class="rail-item">
           <dt>Wilayah</dt>
@@ -46,6 +55,15 @@ const regions = entry.regionIds
         <div class="rail-item">
           <dt>Tema</dt>
           <dd>{entry.themes.map((theme) => capitalize(theme)).join(", ")}</dd>
+        </div>
+      )
+    }
+
+    {
+      entry.reviewed && (
+        <div class="rail-item">
+          <dt>Diperiksa</dt>
+          <dd>{formatReviewDate(entry.reviewed)}</dd>
         </div>
       )
     }

@@ -64,6 +64,10 @@ export const collections = {
     loader: stableIdLoader("explorations"),
     schema: SCHEMAS_BY_COLLECTION.explorations,
   }),
+  collections: defineCollection({
+    loader: stableIdLoader("collections"),
+    schema: SCHEMAS_BY_COLLECTION.collections,
+  }),
   sources: defineCollection({
     loader: stableIdLoader("sources"),
     schema: SCHEMAS_BY_COLLECTION.sources,

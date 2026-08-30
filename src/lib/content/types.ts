@@ -15,6 +15,7 @@ export const ENTRY_TYPES = [
   "article",
   "module",
   "exploration",
+  "collection",
   "source",
 ] as const;
 
@@ -28,9 +29,23 @@ export const KNOWLEDGE_TYPES = [
   "person",
   "work",
   "artifact",
+  "collection",
 ] as const;
 
 export type KnowledgeType = (typeof KNOWLEDGE_TYPES)[number];
+
+/**
+ * Kelompok besar Rupa-rupa Kawruh (struktur A–D) — kosakata terkontrol,
+ * bukan themes bebas (AGENTS.md §21: type-specific schema).
+ */
+export const COLLECTION_SECTIONS = [
+  "tetawuhan",
+  "kewan",
+  "manungsa",
+  "kawruh-liya-liya",
+] as const;
+
+export type CollectionSection = (typeof COLLECTION_SECTIONS)[number];
 
 /** Alur status editorial (PRD §25): Draft → Review → Verified → Published → Needs Review. */
 export const CONTENT_STATUSES = [
@@ -88,6 +103,8 @@ export interface ContentObject {
   /** Referensi ID object sumber (koleksi sources). */
   sourceIds: string[];
   status: ContentStatus;
+  /** Tanggal pemeriksaan editorial terakhir (ISO, mis. 2026-08-31) — opsional. */
+  reviewed?: string;
   /** Entri demo/fixture untuk pengujian pipeline — tidak pernah dipublikasikan (AGENTS.md §93). */
   demo: boolean;
   /** Catatan Rasa: nuansa makna/konteks yang tidak tertangkap terjemahan literal (PRD §10.4). */
@@ -100,6 +117,8 @@ export interface ContentObject {
   };
   /** Langkah guided exploration (koleksi explorations). */
   steps?: ExplorationStep[];
+  /** Kelompok Rupa-rupa Kawruh (koleksi collections) — tetawuhan/kewan/manungsa/kawruh-liya-liya. */
+  section?: CollectionSection;
   /** Field spesifik type yang tidak dinormalisasi eksplisit (mis. reading_time, period). */
   extra: Record<string, unknown>;
 }

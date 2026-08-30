@@ -15,19 +15,32 @@ import MitosKonteks from "../../components/editorial/MitosKonteks.astro";
 import RelatedContent from "../../components/knowledge/RelatedContent.astro";
 import RelationStrip from "../../components/knowledge/RelationStrip.astro";
 import SourceList from "../../components/knowledge/SourceList.astro";
+import TopicLink from "../../components/knowledge/TopicLink.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
-import { capitalize, TYPE_LABELS } from "../../lib/content/labels";
+import { capitalize, SECTION_LABELS, TYPE_LABELS } from "../../lib/content/labels";
 import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
 import { getRelatedContent } from "../../lib/relations/related";
-import { KNOWLEDGE_TYPES, type ContentObject } from "../../lib/content/types";
+import {
+  COLLECTION_SECTIONS,
+  KNOWLEDGE_TYPES,
+  type ContentObject,
+} from "../../lib/content/types";
 import { withBase } from "../../lib/content/routes";
 
 export async function getStaticPaths() {
   const registry = await loadRegistry();
 
   // getStaticPaths dievaluasi di konteks modul terpisah — konstanta lokal di sini.
-  const knowledgeCollections = ["topics", "terms", "traditions", "persons", "works", "artifacts"] as const;
+  const knowledgeCollections = [
+    "topics",
+    "terms",
+    "traditions",
+    "persons",
+    "works",
+    "artifacts",
+    "collections",
+  ] as const;
   const rawEntries = (
     await Promise.all(knowledgeCollections.map((name) => getCollection(name)))
   ).flat();
@@ -43,7 +56,14 @@ export async function getStaticPaths() {
   }));
 }
 
-type KnowledgeCollection = "topics" | "terms" | "traditions" | "persons" | "works" | "artifacts";
+type KnowledgeCollection =
+  | "topics"
+  | "terms"
+  | "traditions"
+  | "persons"
+  | "works"
+  | "artifacts"
+  | "collections";
 
 interface Props {
   entry: ContentObject;
@@ -60,6 +80,31 @@ const related = getRelatedContent(graph, registry, entry.id, 4);
 const sources = entry.sourceIds
   .map((id) => registry.getSource(id))
   .filter((source): source is NonNullable<typeof source> => Boolean(source));
+
+// Anak hierarkis (inverse `contains` dari `part_of` yang ditulis entri anak).
+// Entri non-published tidak punya halaman (AGENTS.md §65) — filter ke published
+// agar seksi "Isi" tidak pernah menautkan rute mati.
+const children = relations
+  .filter((relation) => relation.type === "contains")
+  .map((relation) => registry.getEntry(relation.target))
+  .filter((child): child is ContentObject => child !== undefined && child.status === "published");
+
+type ChildSection = NonNullable<ContentObject["section"]> | "lainnya";
+
+const childrenBySection = new Map<ChildSection, ContentObject[]>();
+for (const child of children) {
+  const key: ChildSection = child.section ?? "lainnya";
+  const group = childrenBySection.get(key) ?? [];
+  group.push(child);
+  childrenBySection.set(key, group);
+}
+const sectionOrder: ChildSection[] = childrenBySection.has("lainnya")
+  ? [...COLLECTION_SECTIONS, "lainnya"]
+  : [...COLLECTION_SECTIONS];
+
+// `contains` sudah disajikan sebagai seksi "Isi" — jangan ditampilkan dua kali.
+const stripRelations =
+  children.length > 0 ? relations.filter((relation) => relation.type !== "contains") : relations;
 ---
 
 <BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition} pagefind="index">
@@ -96,6 +141,30 @@ const sources = entry.sourceIds
           <Content />
         </div>
 
+        {
+          children.length > 0 && (
+            <section class="entry-children" aria-label="Isi">
+              <h2 class="children-heading">Isi</h2>
+              <div class="children-groups">
+                {sectionOrder
+                  .filter((section) => childrenBySection.has(section))
+                  .map((section) => (
+                    <div class="children-group">
+                      {section !== "lainnya" && <h3 class="children-label">{SECTION_LABELS[section]}</h3>}
+                      <ul>
+                        {childrenBySection.get(section)!.map((child) => (
+                          <li>
+                            <TopicLink entry={child} />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+              </div>
+            </section>
+          )
+        }
+
         {entry.catatanRasa && <CatatanRasa text={entry.catatanRasa} />}
 
         {entry.mitosKonteks && (
@@ -106,7 +175,7 @@ const sources = entry.sourceIds
           />
         )}
 
-        <RelationStrip relations={relations} lookup={(id: string) => registry.getEntry(id)} />
+        <RelationStrip relations={stripRelations} lookup={(id: string) => registry.getEntry(id)} />
         <RelatedContent items={related} />
         <SourceList sources={sources} />
       </div>
@@ -238,6 +307,78 @@ const sources = entry.sourceIds
 
   .entry-body :global(blockquote p) {
     margin-top: var(--space-2);
+  }
+
+  /* Tabel daftar istilah (Rupa-rupa Kawruh) — border halus, tanpa kartu (design.md, AGENTS.md §41-43). */
+  .entry-body :global(table) {
+    width: 100%;
+    margin-top: var(--space-4);
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .entry-body :global(th) {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border-default);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .entry-body :global(td) {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: top;
+  }
+
+  .entry-body :global(td:first-child) {
+    font-weight: 500;
+  }
+
+  /* Seksi "Isi": anak hierarkis entri (mis. halaman induk Rupa-rupa Kawruh). */
+  .entry-children {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-6);
+  }
+
+  .children-heading {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .children-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .children-label {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .children-group ul {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1) var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .children-group ul {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (min-width: 1024px) {

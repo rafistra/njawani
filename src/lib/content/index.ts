@@ -18,20 +18,33 @@ let cachedRegistry: ContentRegistry | undefined;
 export async function loadRegistry(): Promise<ContentRegistry> {
   if (cachedRegistry) return cachedRegistry;
 
-  const [topics, terms, traditions, regions, persons, works, artifacts, articles, modules, explorations, sources] =
-    await Promise.all([
-      getCollection("topics"),
-      getCollection("terms"),
-      getCollection("traditions"),
-      getCollection("regions"),
-      getCollection("persons"),
-      getCollection("works"),
-      getCollection("artifacts"),
-      getCollection("articles"),
-      getCollection("modules"),
-      getCollection("explorations"),
-      getCollection("sources"),
-    ]);
+  const [
+    topics,
+    terms,
+    traditions,
+    regions,
+    persons,
+    works,
+    artifacts,
+    articles,
+    modules,
+    explorations,
+    collections,
+    sources,
+  ] = await Promise.all([
+    getCollection("topics"),
+    getCollection("terms"),
+    getCollection("traditions"),
+    getCollection("regions"),
+    getCollection("persons"),
+    getCollection("works"),
+    getCollection("artifacts"),
+    getCollection("articles"),
+    getCollection("modules"),
+    getCollection("explorations"),
+    getCollection("collections"),
+    getCollection("sources"),
+  ]);
 
   const rawEntries: RawContentEntry[] = [
     topics,
@@ -44,6 +57,7 @@ export async function loadRegistry(): Promise<ContentRegistry> {
     articles,
     modules,
     explorations,
+    collections,
     sources,
   ].flatMap((entries) =>
     entries.map((entry) => ({

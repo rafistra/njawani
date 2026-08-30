@@ -12,6 +12,7 @@ import CatatanRasa from "../../components/editorial/CatatanRasa.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
 import type { ContentObject } from "../../lib/content/types";
+import { withBase } from "../../lib/content/routes";
 
 export async function getStaticPaths() {
   const registry = await loadRegistry();
@@ -42,7 +43,7 @@ const readingTime = typeof entry.extra.reading_time === "number" ? entry.extra.r
   <article class="module">
     <header class="module-header">
       <Breadcrumb
-        items={[{ label: "Beranda", href: "/" }, { label: "Sinau", href: "/sinau/" }, { label: entry.title }]}
+        items={[{ label: "Beranda", href: withBase("/") }, { label: "Sinau", href: withBase("/sinau/") }, { label: entry.title }]}
       />
       <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">Modul Sinau</p>
       <h1 class="module-title" data-pagefind-weight="5">{entry.title}</h1>

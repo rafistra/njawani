@@ -21,6 +21,7 @@ import { capitalize, TYPE_LABELS } from "../../lib/content/labels";
 import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
 import { getRelatedContent } from "../../lib/relations/related";
 import { KNOWLEDGE_TYPES, type ContentObject } from "../../lib/content/types";
+import { withBase } from "../../lib/content/routes";
 
 export async function getStaticPaths() {
   const registry = await loadRegistry();
@@ -66,7 +67,7 @@ const sources = entry.sourceIds
     <header class="entry-header">
       <Breadcrumb
         items={[
-          { label: "Kawruh", href: "/kawruh/" },
+          { label: "Kawruh", href: withBase("/kawruh/") },
           { label: TYPE_LABELS[entry.type] },
           { label: entry.title },
         ]}

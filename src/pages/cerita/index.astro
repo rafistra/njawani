@@ -6,6 +6,7 @@
 import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
+import { withBase } from "../../lib/content/routes";
 
 const registry = await loadRegistry();
 const stories = registry
@@ -20,7 +21,7 @@ const stories = registry
 >
   <div class="cerita">
     <header class="page-header">
-      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Cerita" }]} />
+      <Breadcrumb items={[{ label: "Beranda", href: withBase("/") }, { label: "Cerita" }]} />
       <h1>Cerita</h1>
       <p class="lead">
         Bacaan pendek tentang konteks dan rasa di balik pengetahuan —
@@ -32,7 +33,7 @@ const stories = registry
       {
         stories.map((story) => (
           <li class="story-item">
-            <a href={`/cerita/${story.slug}/`}>
+            <a href={withBase(`/cerita/${story.slug}/`)}>
               <span class="story-eyebrow">Cerita · {story.themes.join(", ")}</span>
               <span class="story-title">{story.title}</span>
               {story.shortDefinition && <span class="story-dek">{story.shortDefinition}</span>}

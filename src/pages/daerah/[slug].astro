@@ -15,6 +15,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
 import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
 import type { ContentObject } from "../../lib/content/types";
+import { withBase } from "../../lib/content/routes";
 
 export async function getStaticPaths() {
   const registry = await loadRegistry();
@@ -66,7 +67,7 @@ const relatedRegions = allRegions
   <article class="region">
     <header class="region-header">
       <Breadcrumb
-        items={[{ label: "Beranda", href: "/" }, { label: "Daerah", href: "/daerah/" }, { label: entry.title }]}
+        items={[{ label: "Beranda", href: withBase("/") }, { label: "Daerah", href: withBase("/daerah/") }, { label: entry.title }]}
       />
       <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">Daerah</p>
       <h1 class="region-title" data-pagefind-weight="5">{entry.title}</h1>
@@ -111,7 +112,7 @@ const relatedRegions = allRegions
           <ul>
             {relatedRegions.map((candidate) => (
               <li>
-                <a href={`/daerah/${candidate.slug}/`}>{candidate.title}</a>
+                <a href={withBase(`/daerah/${candidate.slug}/`)}>{candidate.title}</a>
               </li>
             ))}
           </ul>

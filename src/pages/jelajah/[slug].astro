@@ -11,6 +11,7 @@ import TopicLink from "../../components/knowledge/TopicLink.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
 import type { ContentObject, ExplorationStep } from "../../lib/content/types";
+import { withBase } from "../../lib/content/routes";
 
 export async function getStaticPaths() {
   const registry = await loadRegistry();
@@ -49,7 +50,7 @@ const otherExplorations = registry
   <article class="exploration">
     <header class="exploration-header">
       <Breadcrumb
-        items={[{ label: "Beranda", href: "/" }, { label: "Jelajah", href: "/jelajah/" }, { label: entry.title }]}
+        items={[{ label: "Beranda", href: withBase("/") }, { label: "Jelajah", href: withBase("/jelajah/") }, { label: entry.title }]}
       />
       <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">Eksplorasi</p>
       <h1 class="exploration-title" data-pagefind-weight="5">{entry.title}</h1>
@@ -92,7 +93,7 @@ const otherExplorations = registry
           <ul>
             {otherExplorations.map((candidate) => (
               <li>
-                <a href={`/jelajah/${candidate.slug}/`}>{candidate.title}</a>
+                <a href={withBase(`/jelajah/${candidate.slug}/`)}>{candidate.title}</a>
               </li>
             ))}
           </ul>

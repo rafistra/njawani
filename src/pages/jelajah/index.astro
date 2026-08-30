@@ -10,6 +10,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
 import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
 import { getRelationType } from "../../data/relation-types/relation-types";
+import { withBase } from "../../lib/content/routes";
 
 const registry = await loadRegistry();
 const graph = buildRelationGraph(registry);
@@ -39,7 +40,7 @@ const validNeighbors = neighbors.filter((neighbor): neighbor is NonNullable<type
 >
   <div class="jelajah">
     <header class="page-header">
-      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Jelajah" }]} />
+      <Breadcrumb items={[{ label: "Beranda", href: withBase("/") }, { label: "Jelajah" }]} />
       <h1>Jelajah</h1>
       <p class="lead">
         Menemukan pengetahuan lewat perjalanan — bukan daftar tunggu.
@@ -54,7 +55,7 @@ const validNeighbors = neighbors.filter((neighbor): neighbor is NonNullable<type
         {
           explorations.map((exploration) => (
             <li class="exploration-card">
-              <a href={`/jelajah/${exploration.slug}/`}>
+              <a href={withBase(`/jelajah/${exploration.slug}/`)}>
                 <span class="card-eyebrow">{exploration.steps?.length ?? 0} langkah</span>
                 <span class="card-title">{exploration.title}</span>
                 {exploration.shortDefinition && (

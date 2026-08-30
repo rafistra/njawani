@@ -4,12 +4,11 @@
  * dan lebar baca yang konsisten.
  */
 import Breadcrumb from "../knowledge/Breadcrumb.astro";
-import type { ContentObject } from "../../lib/content/types";
+import { withBase } from "../../lib/content/routes";
 
 interface Props {
   title: string;
   lead: string;
-  entry?: ContentObject;
 }
 
 const { title, lead } = Astro.props;
@@ -18,7 +17,11 @@ const { title, lead } = Astro.props;
 <div class="aksara-page">
   <header class="page-header">
     <Breadcrumb
-      items={[{ label: "Beranda", href: "/" }, { label: "Aksara", href: "/aksara/" }, { label: title }]}
+      items={[
+        { label: "Beranda", href: withBase("/") },
+        { label: "Aksara", href: withBase("/aksara/") },
+        { label: title },
+      ]}
     />
     <p class="eyebrow">Aksara Jawa</p>
     <h1>{title}</h1>

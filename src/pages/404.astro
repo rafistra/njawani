@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/content/routes";
 ---
 
 <BaseLayout title="Halaman tidak ditemukan — Njawani" description="Halaman yang kamu cari tidak tersedia.">
@@ -11,10 +12,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       dari Jelajah.
     </p>
     <ul class="links">
-      <li><a href="/">Beranda</a></li>
-      <li><a href="/kawruh/">Kawruh</a></li>
-      <li><a href="/jelajah/">Jelajah</a></li>
-      <li><a href="/cari/">Cari</a></li>
+      <li><a href={withBase("/")}>Beranda</a></li>
+      <li><a href={withBase("/kawruh/")}>Kawruh</a></li>
+      <li><a href={withBase("/jelajah/")}>Jelajah</a></li>
+      <li><a href={withBase("/cari/")}>Cari</a></li>
     </ul>
   </section>
 </BaseLayout>

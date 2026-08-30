@@ -11,6 +11,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { loadRegistry } from "../lib/content";
 import { buildRelationGraph } from "../lib/relations/engine";
 import { getRelatedContent } from "../lib/relations/related";
+import { withBase } from "../lib/content/routes";
 
 const registry = await loadRegistry();
 const graph = buildRelationGraph(registry);
@@ -54,22 +55,22 @@ const chainEntries = chain
       Kenali, pahami, dan jelajahi bahasa, sastra, dan budaya Jawa — dari
       unggah-ungguh hingga aksara, dari Yogyakarta hingga Osing.
     </p>
-    <a class="hero-search" href="/cari/">
+    <a class="hero-search" href={withBase("/cari/")}>
       <span>Cari istilah, tradisi, karya sastra, atau budaya Jawa…</span>
       <span class="search-hint" aria-hidden="true">/</span>
     </a>
   </section>
 
   <section class="gateway" aria-label="Tiga pintu utama">
-    <a class="gate" href="/jelajah/">
+    <a class="gate" href={withBase("/jelajah/")}>
       <h2>Jelajah</h2>
       <p>Temukan hubungan dan cerita.</p>
     </a>
-    <a class="gate" href="/kawruh/">
+    <a class="gate" href={withBase("/kawruh/")}>
       <h2>Kawruh</h2>
       <p>Cari dan pahami pengetahuan.</p>
     </a>
-    <a class="gate" href="/sinau/">
+    <a class="gate" href={withBase("/sinau/")}>
       <h2>Sinau</h2>
       <p>Pelajari satu topik pada satu waktu.</p>
     </a>
@@ -81,7 +82,7 @@ const chainEntries = chain
         <p class="section-eyebrow">Eksplorasi terpandu</p>
         <h2>{featuredExploration.title}</h2>
         {featuredExploration.shortDefinition && <p class="section-note">{featuredExploration.shortDefinition}</p>}
-        <a class="section-action" href={`/jelajah/${featuredExploration.slug}/`}>
+        <a class="section-action" href={withBase(`/jelajah/${featuredExploration.slug}/`)}>
           Mulai jelajah →
         </a>
       </section>
@@ -93,7 +94,7 @@ const chainEntries = chain
       <section class="curated" aria-label="Pengetahuan terkurasi">
         <div class="section-head">
           <h2>Mulai dari sini</h2>
-          <a class="section-action" href="/kawruh/">
+          <a class="section-action" href={withBase("/kawruh/")}>
             Semua Kawruh →
           </a>
         </div>
@@ -111,7 +112,7 @@ const chainEntries = chain
   <section class="map-preview" aria-label="Peta budaya">
     <div class="section-head">
       <h2>Jelajahi berdasarkan wilayah</h2>
-      <a class="section-action" href="/daerah/">Semua daerah →</a>
+      <a class="section-action" href={withBase("/daerah/")}>Semua daerah →</a>
     </div>
     <p class="section-note">
       Budaya Jawa tidak tunggal — tujuh wilayah budaya, tujuh cara berbahasa
@@ -125,14 +126,14 @@ const chainEntries = chain
       <section class="sinau-highlight" aria-label="Modul Sinau">
         <div class="section-head">
           <h2>Sinau — pelajari mandiri</h2>
-          <a class="section-action" href="/sinau/">
+          <a class="section-action" href={withBase("/sinau/")}>
             Semua modul →
           </a>
         </div>
         <ul class="module-list">
           {modules.slice(0, 3).map((module) => (
             <li>
-              <a href={`/sinau/${module.slug}/`}>
+              <a href={withBase(`/sinau/${module.slug}/`)}>
                 <span class="module-title">{module.title}</span>
                 <span class="module-meta">
                   {typeof module.extra.reading_time === "number" ? `${module.extra.reading_time} menit` : "Bacaan singkat"}
@@ -168,7 +169,7 @@ const chainEntries = chain
         <p class="section-eyebrow">Cerita</p>
         <h2>{stories[0].title}</h2>
         {stories[0].shortDefinition && <p class="section-note">{stories[0].shortDefinition}</p>}
-        <a class="section-action" href={`/cerita/${stories[0].slug}/`}>Baca →</a>
+        <a class="section-action" href={withBase(`/cerita/${stories[0].slug}/`)}>Baca →</a>
       </section>
     )
   }
@@ -180,7 +181,7 @@ const chainEntries = chain
       Ha na ca ra ka — mulai dari 20 aksara dasar, atau langsung mencoba alat
       transliterasinya.
     </p>
-    <a class="section-action" href="/aksara/transliterasi/">Coba transliterasi →</a>
+    <a class="section-action" href={withBase("/aksara/transliterasi/")}>Coba transliterasi →</a>
   </section>
 </BaseLayout>
 

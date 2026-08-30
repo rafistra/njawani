@@ -5,25 +5,26 @@
  */
 import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../lib/content/routes";
 
 const pages = [
   {
-    href: "/aksara/carakan/",
+    href: withBase("/aksara/carakan/"),
     title: "Carakan",
     description: "20 aksara legena, aksara murda, aksara swara, dan angka Jawa.",
   },
   {
-    href: "/aksara/sandhangan/",
+    href: withBase("/aksara/sandhangan/"),
     title: "Sandhangan",
     description: "Tanda vokal dan tanda mati yang mengubah vokal bawaan 'a'.",
   },
   {
-    href: "/aksara/pasangan/",
+    href: withBase("/aksara/pasangan/"),
     title: "Pasangan",
     description: "Bentuk kecil aksara di bawah aksara lain — dan cara terbentuknya.",
   },
   {
-    href: "/aksara/transliterasi/",
+    href: withBase("/aksara/transliterasi/"),
     title: "Transliterasi",
     description: "Alat konversi Latin → Aksara Jawa untuk mencoba menulis.",
   },
@@ -36,7 +37,7 @@ const pages = [
 >
   <div class="aksara">
     <header class="page-header">
-      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Aksara" }]} />
+      <Breadcrumb items={[{ label: "Beranda", href: withBase("/") }, { label: "Aksara" }]} />
       <h1>Aksara</h1>
       <p class="lead">
         Aksara Jawa adalah aksara suku kata. Mulai dari carakan —{" "}

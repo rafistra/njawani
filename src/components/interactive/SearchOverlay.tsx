@@ -15,6 +15,7 @@ interface PagefindResultData {
 }
 
 interface PagefindApi {
+  options(options: { baseUrl: string }): Promise<void>;
   search(query: string): Promise<{ results: { data(): Promise<PagefindResultData> }[] }>;
 }
 
@@ -77,7 +78,9 @@ export default function SearchOverlay({ basePath }: { basePath: string }) {
   useEffect(() => {
     if (!open || apiRef.current) return;
     import(/* @vite-ignore */ `${basePath}pagefind/pagefind.js`)
-      .then((mod: PagefindApi) => {
+      .then(async (mod: PagefindApi) => {
+        // Prefix URL hasil pencarian dengan base path GitHub Pages.
+        await mod.options({ baseUrl: basePath });
         apiRef.current = mod;
       })
       .catch(() => {

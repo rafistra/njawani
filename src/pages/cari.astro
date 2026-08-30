@@ -276,6 +276,7 @@ const fallbackEntries = registry
   }
 
   interface PagefindApi {
+    options(options: { baseUrl: string }): Promise<void>;
     search(
       query: string,
       options?: { filters?: Record<string, string[]> },
@@ -301,7 +302,7 @@ const fallbackEntries = registry
     for (const jenis of activeFilters.jenis ?? []) params.set("jenis", jenis);
     for (const tema of activeFilters.tema ?? []) params.set("tema", tema);
     const query = params.toString();
-    history.replaceState(null, "", query ? `/cari/?${query}` : "/cari/");
+    history.replaceState(null, "", query ? `${BASE}cari/?${query}` : `${BASE}cari/`);
   }
 
   function renderResults(results: PagefindResultData[]) {
@@ -415,6 +416,8 @@ const fallbackEntries = registry
   async function init() {
     try {
       pagefind = (await import(/* @vite-ignore */ `${BASE}pagefind/pagefind.js`)) as PagefindApi;
+      // Prefix URL hasil pencarian dengan base path GitHub Pages.
+      await pagefind.options({ baseUrl: BASE });
     } catch {
       if (status) {
         status.textContent = "Index pencarian tersedia setelah build produksi (npm run build && npm run preview).";

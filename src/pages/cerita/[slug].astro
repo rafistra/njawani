@@ -12,6 +12,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
 import { capitalize } from "../../lib/content/labels";
 import type { ContentObject } from "../../lib/content/types";
+import { withBase } from "../../lib/content/routes";
 
 export async function getStaticPaths() {
   const registry = await loadRegistry();
@@ -40,7 +41,7 @@ const { Content } = await render(raw);
   <article class="story">
     <header class="story-header">
       <Breadcrumb
-        items={[{ label: "Beranda", href: "/" }, { label: "Cerita", href: "/cerita/" }, { label: entry.title }]}
+        items={[{ label: "Beranda", href: withBase("/") }, { label: "Cerita", href: withBase("/cerita/") }, { label: entry.title }]}
       />
       <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">
         Cerita{entry.themes.length > 0 && ` · ${entry.themes.map((theme) => capitalize(theme)).join(", ")}`}

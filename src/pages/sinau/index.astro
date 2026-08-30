@@ -6,6 +6,7 @@
 import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
+import { withBase } from "../../lib/content/routes";
 
 const registry = await loadRegistry();
 const modules = registry
@@ -20,7 +21,7 @@ const modules = registry
 >
   <div class="sinau">
     <header class="page-header">
-      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Sinau" }]} />
+      <Breadcrumb items={[{ label: "Beranda", href: withBase("/") }, { label: "Sinau" }]} />
       <h1>Sinau</h1>
       <p class="lead">
         Modul singkat untuk mempelajari satu topik pada satu waktu — tanpa
@@ -33,7 +34,7 @@ const modules = registry
       {
         modules.map((module) => (
           <li class="module-card">
-            <a href={`/sinau/${module.slug}/`}>
+            <a href={withBase(`/sinau/${module.slug}/`)}>
               <span class="card-title">{module.title}</span>
               {module.shortDefinition && <span class="card-definition">{module.shortDefinition}</span>}
               <span class="card-meta">

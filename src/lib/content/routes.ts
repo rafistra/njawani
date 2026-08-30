@@ -29,6 +29,15 @@ function astroBaseUrl(): string {
   return env?.BASE_URL ?? "/";
 }
 
+/**
+ * Prefix path internal dengan base path (AGENTS.md §19) — untuk link statis
+ * antar-section (breadcrumb, gateway, kartu) yang tidak lewat resolver entri.
+ * withBase("/") → "/njawani/"; withBase("/kawruh/") → "/njawani/kawruh/".
+ */
+export function withBase(path: string, base: string = astroBaseUrl()): string {
+  return `${base}${path.replace(/^\/+/, "")}`;
+}
+
 /** URL kanonik entri, atau null bila tipenya tidak punya halaman publik (source). */
 export function resolveEntryRoute(
   entry: Pick<ContentObject, "type" | "slug">,

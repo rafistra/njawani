@@ -7,6 +7,7 @@ import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import CulturalMap from "../../components/knowledge/CulturalMap.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
+import { withBase } from "../../lib/content/routes";
 
 const registry = await loadRegistry();
 const regions = registry
@@ -21,7 +22,7 @@ const regions = registry
 >
   <div class="daerah">
     <header class="page-header">
-      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Daerah" }]} />
+      <Breadcrumb items={[{ label: "Beranda", href: withBase("/") }, { label: "Daerah" }]} />
       <h1>Daerah</h1>
       <p class="lead">
         Budaya Jawa tidak tunggal. Jelajahi wilayah-wilayah budaya — bahasa,

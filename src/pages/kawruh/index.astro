@@ -1,48 +1,234 @@
 ---
+/**
+ * Indeks Kawruh (PRD §26.2): daftar entri pengetahuan published dengan
+ * filter ringan jenis + tema. Filter adalah progressive enhancement
+ * native JS — tanpa JavaScript seluruh daftar tetap terbaca.
+ */
+import KnowledgeCard from "../../components/knowledge/KnowledgeCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import { capitalize, TYPE_LABELS } from "../../lib/content/labels";
+import { KNOWLEDGE_TYPES } from "../../lib/content/types";
+
+const registry = await loadRegistry();
+const entries = registry
+  .getPublished()
+  .filter((entry) => (KNOWLEDGE_TYPES as readonly string[]).includes(entry.type))
+  .sort((a, b) => a.title.localeCompare(b.title, "id"));
+
+const presentTypes = [...new Set(entries.map((entry) => entry.type))];
+const presentThemes = [...new Set(entries.flatMap((entry) => entry.themes))].sort();
 ---
 
 <BaseLayout
   title="Kawruh — Njawani"
-  description="Referensi pengetahuan bahasa, sastra, dan budaya Jawa."
+  description="Referensi pengetahuan bahasa, sastra, dan budaya Jawa: konsep, istilah, tradisi, tokoh, karya, dan objek."
 >
-  <section class="placeholder">
-    <p class="eyebrow">Njawani</p>
-    <h1>Kawruh</h1>
-    <p>
-      Bagian ini masih kerangka awal. Indeks pengetahuan dan entri kanonik akan
-      dibangun dari konten Markdown dengan relation engine — PRD §7.2, §20,
-      dan §26.2.
-    </p>
-  </section>
+  <div class="kawruh">
+    <header class="page-header">
+      <p class="eyebrow">Njawani</p>
+      <h1>Kawruh</h1>
+      <p class="lead">
+        Referensi pengetahuan Jawa — dari konsep dan istilah hingga tradisi,
+        tokoh, dan karya. Setiap entri terhubung dengan pengetahuan lain.
+      </p>
+    </header>
+
+    <div class="filters" role="group" aria-label="Filter entri">
+      <fieldset class="filter-group" data-filter="type">
+        <legend>Jenis</legend>
+        <button type="button" aria-pressed="true" data-value="all">Semua</button>
+        {
+          presentTypes.map((type) => (
+            <button type="button" aria-pressed="false" data-value={type}>
+              {TYPE_LABELS[type]}
+            </button>
+          ))
+        }
+      </fieldset>
+
+      {
+        presentThemes.length > 0 && (
+          <fieldset class="filter-group" data-filter="theme">
+            <legend>Tema</legend>
+            <button type="button" aria-pressed="true" data-value="all">
+              Semua
+            </button>
+            {presentThemes.map((theme) => (
+              <button type="button" aria-pressed="false" data-value={theme}>
+                {capitalize(theme)}
+              </button>
+            ))}
+          </fieldset>
+        )
+      }
+
+      <p class="filter-status" role="status" aria-live="polite"></p>
+    </div>
+
+    <ul class="entries" data-entries>
+      {
+        entries.map((entry) => (
+          <li class="entry-item" data-type={entry.type} data-themes={entry.themes.join(" ")}>
+            <KnowledgeCard entry={entry} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </BaseLayout>
 
 <style>
-  .placeholder {
+  .kawruh {
     max-width: var(--container-content);
     margin-inline: auto;
-    padding: var(--space-9) var(--space-5);
+    padding: var(--space-7) var(--space-5) var(--space-9);
   }
 
   .eyebrow {
-    margin: 0 0 var(--space-4);
-    color: var(--color-text-muted);
+    margin: 0;
+    color: var(--color-brand);
     font-size: 0.8125rem;
-    text-transform: uppercase;
+    font-weight: 500;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   h1 {
-    margin: 0;
+    margin: var(--space-3) 0 0;
     font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
     font-weight: 500;
-    font-size: clamp(2.25rem, 6vw, 3rem);
     line-height: 1.08;
   }
 
-  p:not(.eyebrow) {
+  .lead {
     max-width: var(--container-reading);
-    margin: var(--space-5) 0 0;
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .filters {
+    margin-top: var(--space-7);
+    padding: var(--space-4) 0;
+    border-block: 1px solid var(--border-subtle);
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .filter-group + .filter-group {
+    margin-top: var(--space-3);
+  }
+
+  .filter-group legend {
+    float: left;
+    margin-right: var(--space-3);
+    padding: 0;
     color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .filter-group button {
+    padding: var(--space-1) var(--space-3);
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+  }
+
+  .filter-group button:hover {
+    border-color: var(--border-strong);
+  }
+
+  .filter-group button[aria-pressed="true"] {
+    background: var(--color-text);
+    border-color: var(--color-text);
+    color: var(--color-canvas);
+  }
+
+  .filter-status {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .entries {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .entries {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .entries {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .entry-item[hidden] {
+    display: none;
   }
 </style>
+
+<script>
+  // Filter ringan — Level 2: Astro + native JS (AGENTS.md §6).
+  const filterGroups = document.querySelectorAll<HTMLElement>(".filter-group");
+  const entries = document.querySelectorAll<HTMLElement>(".entry-item");
+  const status = document.querySelector<HTMLElement>(".filter-status");
+
+  const active: Record<string, string> = {};
+
+  function applyFilters() {
+    let visible = 0;
+    for (const entry of entries) {
+      const matchesType = !active.type || active.type === "all" || entry.dataset.type === active.type;
+      const themes = (entry.dataset.themes ?? "").split(" ");
+      const matchesTheme = !active.theme || active.theme === "all" || themes.includes(active.theme);
+      const show = matchesType && matchesTheme;
+      entry.hidden = !show;
+      if (show) visible += 1;
+    }
+    if (status) {
+      status.textContent =
+        !active.type || active.type === "all"
+          ? ""
+          : `${visible} entri ditampilkan`;
+    }
+  }
+
+  for (const group of filterGroups) {
+    const key = group.dataset.filter;
+    if (!key) continue;
+    group.querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", () => {
+        active[key] = button.dataset.value ?? "all";
+        group.querySelectorAll("button").forEach((other) => {
+          other.setAttribute("aria-pressed", String(other === button));
+        });
+        applyFilters();
+      });
+    });
+  }
+</script>

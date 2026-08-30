@@ -61,19 +61,19 @@ Checkpoints: `feat: region pages` → `feat: cultural map island with list fallb
 
 Checkpoints: `feat: jelajah index and guided explorations` → `feat: knowledge explorer island`
 
-## M6 — Sinau
+## M6 — Sinau ✅
 
-- [ ] `/sinau/` index + template modul (design.md §81) tanpa gamifikasi
-- [ ] 4–6 modul seed
+- [x] `/sinau/` index + template modul (design.md §81) tanpa gamifikasi
+- [x] 4–6 modul seed (4 modul: ngoko & krama, peta tingkat tutur, mengenal carakan, bilangan bahasa Jawa)
 
-Checkpoint: `feat: sinau learning modules`
+Checkpoints: `feat: sinau learning modules`
 
-## M7 — Cerita
+## M7 — Cerita ✅
 
-- [ ] `/cerita/` index + template editorial (design.md §83)
-- [ ] 2 cerita seed terhubung ke Kawruh
+- [x] `/cerita/` index + template editorial (design.md §83)
+- [x] 2 cerita seed terhubung ke Kawruh (wiki-link ke unggah-ungguh, ngoko, krama, dan region)
 
-Checkpoint: `feat: editorial stories`
+Checkpoints: `feat: editorial stories`
 
 ## M8 — Aksara ✅
 

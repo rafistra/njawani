@@ -1,57 +1,566 @@
 ---
+/**
+ * Homepage hybrid (PRD §9, design.md §27): bukan daftar seluruh isi,
+ * tetapi komposisi yang membuat pengguna ingin membuka sesuatu.
+ * Ritme section mengikuti design.md §26.
+ */
+import CulturalMap from "../components/knowledge/CulturalMap.astro";
+import KnowledgeCard from "../components/knowledge/KnowledgeCard.astro";
+import TopicLink from "../components/knowledge/TopicLink.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadRegistry } from "../lib/content";
+import { buildRelationGraph } from "../lib/relations/engine";
+import { getRelatedContent } from "../lib/relations/related";
+
+const registry = await loadRegistry();
+const graph = buildRelationGraph(registry);
+const published = registry.getPublished();
+
+const byType = (type: string) => published.filter((entry) => entry.type === type);
+
+const explorations = byType("exploration");
+const featuredExploration = explorations[0];
+const modules = byType("module");
+const stories = byType("article");
+const regions = byType("region");
+
+// Kurasi: entri dasar klaster bahasa (PRD §27 — Bahasa & Unggah-Ungguh dominan).
+const curatedIds = ["unggah-ungguh", "krama", "ngoko"];
+const curated = curatedIds
+  .map((id) => registry.getEntry(id))
+  .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry) && entry!.status === "published");
+
+// Rabbit hole: rantai relasi bermakna dari satu topik awal (PRD §20.8, §86).
+const chain: string[] = ["unggah-ungguh"];
+let current = "unggah-ungguh";
+while (chain.length < 4) {
+  const next = getRelatedContent(graph, registry, current, 4).find(
+    (item) => !chain.includes(item.entry.id),
+  );
+  if (!next) break;
+  chain.push(next.entry.id);
+  current = next.entry.id;
+}
+const chainEntries = chain
+  .map((id) => registry.getEntry(id))
+  .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 ---
 
 <BaseLayout title="Njawani — Menyelami Jawa, Memahami Rasa">
   <section class="hero">
-    <p class="eyebrow">Kerangka awal</p>
-    <h1>Njawani</h1>
-    <p class="tagline">Menyelami Jawa, Memahami Rasa</p>
-    <p class="note">
-      Ini masih scaffold awal. Homepage akan dibangun mengikuti struktur
-      <code>prd.md</code> §9 dan design system <code>design.md</code>.
+    <p class="eyebrow">Njawani</p>
+    <h1>Menyelami Jawa, memahami rasa.</h1>
+    <p class="hero-note">
+      Kenali, pahami, dan jelajahi bahasa, sastra, dan budaya Jawa — dari
+      unggah-ungguh hingga aksara, dari Yogyakarta hingga Osing.
     </p>
+    <a class="hero-search" href="/cari/">
+      <span>Cari istilah, tradisi, karya sastra, atau budaya Jawa…</span>
+      <span class="search-hint" aria-hidden="true">/</span>
+    </a>
+  </section>
+
+  <section class="gateway" aria-label="Tiga pintu utama">
+    <a class="gate" href="/jelajah/">
+      <h2>Jelajah</h2>
+      <p>Temukan hubungan dan cerita.</p>
+    </a>
+    <a class="gate" href="/kawruh/">
+      <h2>Kawruh</h2>
+      <p>Cari dan pahami pengetahuan.</p>
+    </a>
+    <a class="gate" href="/sinau/">
+      <h2>Sinau</h2>
+      <p>Pelajari satu topik pada satu waktu.</p>
+    </a>
+  </section>
+
+  {
+    featuredExploration && (
+      <section class="featured dark" aria-label="Eksplorasi pilihan">
+        <p class="section-eyebrow">Eksplorasi terpandu</p>
+        <h2>{featuredExploration.title}</h2>
+        {featuredExploration.shortDefinition && <p class="section-note">{featuredExploration.shortDefinition}</p>}
+        <a class="section-action" href={`/jelajah/${featuredExploration.slug}/`}>
+          Mulai jelajah →
+        </a>
+      </section>
+    )
+  }
+
+  {
+    curated.length > 0 && (
+      <section class="curated" aria-label="Pengetahuan terkurasi">
+        <div class="section-head">
+          <h2>Mulai dari sini</h2>
+          <a class="section-action" href="/kawruh/">
+            Semua Kawruh →
+          </a>
+        </div>
+        <ul class="curated-grid">
+          {curated.map((entry) => (
+            <li>
+              <KnowledgeCard entry={entry} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="map-preview" aria-label="Peta budaya">
+    <div class="section-head">
+      <h2>Jelajahi berdasarkan wilayah</h2>
+      <a class="section-action" href="/daerah/">Semua daerah →</a>
+    </div>
+    <p class="section-note">
+      Budaya Jawa tidak tunggal — tujuh wilayah budaya, tujuh cara berbahasa
+      dan bertradisi.
+    </p>
+    <CulturalMap regions={regions} />
+  </section>
+
+  {
+    modules.length > 0 && (
+      <section class="sinau-highlight" aria-label="Modul Sinau">
+        <div class="section-head">
+          <h2>Sinau — pelajari mandiri</h2>
+          <a class="section-action" href="/sinau/">
+            Semua modul →
+          </a>
+        </div>
+        <ul class="module-list">
+          {modules.slice(0, 3).map((module) => (
+            <li>
+              <a href={`/sinau/${module.slug}/`}>
+                <span class="module-title">{module.title}</span>
+                <span class="module-meta">
+                  {typeof module.extra.reading_time === "number" ? `${module.extra.reading_time} menit` : "Bacaan singkat"}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    chainEntries.length > 1 && (
+      <section class="rabbit-hole" aria-label="Knowledge rabbit hole">
+        <h2>Mulai dari satu topik</h2>
+        <p class="section-note">Ikuti rantai relasi — setiap halaman adalah pintu masuk ke pengetahuan lain.</p>
+        <ol class="chain">
+          {chainEntries.map((entry, index) => (
+            <li>
+              {index > 0 && <span class="chain-arrow" aria-hidden="true">→</span>}
+              <TopicLink entry={entry} />
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    stories[0] && (
+      <section class="story-highlight" aria-label="Cerita pilihan">
+        <p class="section-eyebrow">Cerita</p>
+        <h2>{stories[0].title}</h2>
+        {stories[0].shortDefinition && <p class="section-note">{stories[0].shortDefinition}</p>}
+        <a class="section-action" href={`/cerita/${stories[0].slug}/`}>Baca →</a>
+      </section>
+    )
+  }
+
+  <section class="aksara-highlight" aria-label="Aksara Jawa">
+    <h2>Kenali Aksara Jawa</h2>
+    <p class="javanese-sample" lang="jv">ꦲꦤꦕꦫꦏ</p>
+    <p class="section-note">
+      Ha na ca ra ka — mulai dari 20 aksara dasar, atau langsung mencoba alat
+      transliterasinya.
+    </p>
+    <a class="section-action" href="/aksara/transliterasi/">Coba transliterasi →</a>
   </section>
 </BaseLayout>
 
 <style>
+  .hero,
+  .gateway,
+  .featured,
+  .curated,
+  .map-preview,
+  .sinau-highlight,
+  .rabbit-hole,
+  .story-highlight,
+  .aksara-highlight {
+    padding-inline: var(--space-5);
+  }
+
+  /* Hero — calm */
   .hero {
     max-width: var(--container-content);
     margin-inline: auto;
-    padding: var(--space-9) var(--space-5);
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-9);
   }
 
   .eyebrow {
-    margin: 0 0 var(--space-4);
-    color: var(--color-text-muted);
+    margin: 0;
+    color: var(--color-brand);
     font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
   }
 
-  h1 {
+  .hero h1 {
+    margin: var(--space-4) 0 0;
+    max-width: 14ch;
+    font-family: var(--font-display);
+    font-size: clamp(2.875rem, 7vw, 5rem); /* Display XL — design.md §14 */
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-note {
+    max-width: 44ch;
+    margin: var(--space-5) 0 0;
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .hero-search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    max-width: 560px;
+    margin-top: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .hero-search:hover {
+    border-color: var(--color-interactive);
+  }
+
+  .search-hint {
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xs);
+    font-size: 0.75rem;
+  }
+
+  /* Gateway — structured */
+  .gateway {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-block: var(--space-8);
+    border-block: 1px solid var(--border-subtle);
+  }
+
+  @media (min-width: 768px) {
+    .gateway {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .gate {
+    padding: var(--space-5) var(--space-4);
+    text-decoration: none;
+  }
+
+  .gate h2 {
     margin: 0;
     font-family: var(--font-display);
+    font-size: 1.75rem;
     font-weight: 500;
-    font-size: clamp(2.875rem, 8vw, 5rem); /* Display XL — design.md §14 */
-    line-height: 0.98;
+    color: var(--color-text);
+    transition: color var(--duration-fast) var(--ease-standard);
   }
 
-  .tagline {
-    margin: var(--space-4) 0 0;
+  .gate:hover h2 {
+    color: var(--color-interactive);
+  }
+
+  .gate p {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  /* Shared section pieces */
+  section h2 {
     font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.375rem;
+    font-weight: 500;
+  }
+
+  .section-eyebrow {
+    margin: 0 0 var(--space-3);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section-note {
+    max-width: var(--container-reading);
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .section-action {
+    display: inline-block;
+    margin-top: var(--space-4);
+    color: var(--color-interactive);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .section-action:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .section-head .section-action {
+    margin-top: 0;
+  }
+
+  /* Featured exploration — immersive dark (design.md §49) */
+  .featured {
+    max-width: none;
+    background: var(--color-surface-dark);
+    color: var(--color-canvas);
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-9);
+  }
+
+  .featured .section-eyebrow {
+    color: var(--color-brand-soft);
+  }
+
+  .featured h2 {
+    margin: 0;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    line-height: 1.1;
+  }
+
+  .featured .section-note {
+    color: var(--color-arang-100, #d8d4ce);
+  }
+
+  .featured .section-action {
+    color: var(--color-brand-soft);
+  }
+
+  /* Curated — informative */
+  .curated {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-8);
+  }
+
+  .curated h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .curated-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 768px) {
+    .curated-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Map — immersive */
+  .map-preview {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-9);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .map-preview h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  /* Sinau — light */
+  .sinau-highlight {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-8);
+  }
+
+  .sinau-highlight h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .module-list {
+    display: flex;
+    flex-direction: column;
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .module-list li a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--border-subtle);
+    text-decoration: none;
+  }
+
+  .module-list li:last-child a {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .module-title {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .module-list a:hover .module-title {
+    color: var(--color-interactive);
+  }
+
+  .module-meta {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  /* Rabbit hole — explorative */
+  .rabbit-hole {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-9);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .rabbit-hole h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-3) var(--space-4);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chain li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  .chain-arrow {
+    color: var(--color-brand);
+    font-size: 1.25rem;
+  }
+
+  /* Story — calm */
+  .story-highlight {
+    max-width: var(--container-reading);
+    margin-inline: auto;
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-9);
+    border-top: 1px solid var(--border-subtle);
+    text-align: left;
+  }
+
+  .story-highlight .section-eyebrow {
     color: var(--color-brand);
   }
 
-  .note {
-    max-width: var(--container-reading);
-    margin: var(--space-7) 0 0;
-    color: var(--color-text-muted);
+  .story-highlight h2 {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    line-height: 1.15;
   }
 
-  .note code {
-    font-size: 0.875em;
+  /* Aksara — light ending */
+  .aksara-highlight {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-10);
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+
+  .aksara-highlight h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .javanese-sample {
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-javanese);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--color-brand);
+    line-height: 1.2;
+  }
+
+  .aksara-highlight .section-note {
+    margin-inline: auto;
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      padding-top: var(--space-8);
+      padding-bottom: var(--space-7);
+    }
+
+    section {
+      padding-top: var(--space-7);
+      padding-bottom: var(--space-7);
+    }
   }
 </style>

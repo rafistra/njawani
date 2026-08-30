@@ -33,7 +33,6 @@ interface Props {
 }
 
 const { entry, raw } = Astro.props;
-const registry = await loadRegistry();
 const { Content } = await render(raw);
 ---
 

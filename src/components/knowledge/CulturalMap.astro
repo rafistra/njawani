@@ -1,11 +1,13 @@
 ---
 /**
  * Cultural Map (PRD §22, design.md §59): navigator, bukan database UI.
- * SVG statis dengan <a> native — tanpa JavaScript, hover pakai <title>,
- * dan daftar wilayah di bawahnya adalah fallback + aksesibilitas.
- * Batas budaya ditampilkan sebagai penanda skematik, bukan poligon klaim.
+ * SVG statis dengan <a> native — tanpa JavaScript. Garis pantai dari
+ * Natural Earth 10m (lihat scripts/generate-map-data.mjs); wilayah budaya
+ * digambar sebagai zona lunak "perkiraan sebaran" yang di-clip ke daratan,
+ * BUKAN batas administratif (AGENTS.md §52). Daftar wilayah di bawahnya
+ * adalah fallback + aksesibilitas.
  */
-import { JAVA_OUTLINE_PATH, JAVA_VIEWBOX, REGION_MARKERS } from "../../data/regions/map";
+import { JAVA_VIEWBOX, LAND_PATH, REGION_AREAS } from "../../data/regions/map";
 import { resolveEntryRoute } from "../../lib/content/routes";
 import type { ContentObject } from "../../lib/content/types";
 
@@ -15,46 +17,57 @@ interface Props {
 
 const { regions } = Astro.props;
 
-const markers = REGION_MARKERS.map((marker) => {
-  const region = regions.find((entry) => entry.id === marker.id);
+const areas = REGION_AREAS.map((area) => {
+  const region = regions.find((entry) => entry.id === area.id);
   if (!region) return undefined;
-  return { ...marker, region, href: resolveEntryRoute(region) };
-}).filter((marker): marker is NonNullable<typeof marker> => Boolean(marker));
+  return { ...area, region, href: resolveEntryRoute(region) };
+}).filter((area): area is NonNullable<typeof area> => Boolean(area));
 ---
 
 <figure class="cultural-map">
   <svg
     viewBox={`0 0 ${JAVA_VIEWBOX.width} ${JAVA_VIEWBOX.height}`}
-    role="img"
-    aria-label="Peta skematik wilayah budaya Jawa"
+    role="group"
+    aria-label="Peta wilayah budaya Pulau Jawa dan Madura"
   >
-    <title>Wilayah budaya Jawa — peta skematik, bukan batas administratif</title>
-    <path class="island" d={JAVA_OUTLINE_PATH} />
+    <title>Area menandai perkiraan sebaran wilayah budaya, bukan batas administratif</title>
+    <defs>
+      <clipPath id="cultural-map-land"><path d={LAND_PATH} /></clipPath>
+      <filter id="cultural-map-soften" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="6"></feGaussianBlur>
+      </filter>
+    </defs>
+    <path class="island" d={LAND_PATH} />
     {
-      markers.map((marker) => (
-        <a href={marker.href} class="marker-link">
-          <g transform={`translate(${marker.x} ${marker.y})`}>
-            <title>{marker.region.title}</title>
-            <circle class="marker" r="7" />
-            <circle class="marker-dot" r="2.5" />
-            <text class="marker-label" y="-14" text-anchor="middle">
-              {marker.region.title}
-            </text>
+      areas.map((area) => (
+        <a href={area.href} class="area-link" aria-label={area.region.title}>
+          <title>
+            {area.region.title} — {area.region.shortDefinition}
+          </title>
+          <g clip-path="url(#cultural-map-land)">
+            <g filter="url(#cultural-map-soften)">
+              {area.paths.map((path) => (
+                <path class="zone" d={path} />
+              ))}
+            </g>
           </g>
+          <text class="marker-label" x={area.label.x} y={area.label.y} text-anchor="middle">
+            {area.region.title}
+          </text>
         </a>
       ))
     }
   </svg>
 
   <figcaption>
-    Peta skematik — penanda wilayah budaya, bukan batas administratif.
+    Garis pantai: Natural Earth — area budaya bersifat perkiraan sebaran, bukan batas administratif.
   </figcaption>
 
   <ul class="map-list" aria-label="Daftar wilayah budaya">
     {
-      markers.map((marker) => (
+      areas.map((area) => (
         <li>
-          <a href={marker.href}>{marker.region.title}</a>
+          <a href={area.href}>{area.region.title}</a>
         </li>
       ))
     }
@@ -74,14 +87,10 @@ const markers = REGION_MARKERS.map((marker) => {
     stroke-width: 1.5;
   }
 
-  .marker {
+  .zone {
     fill: var(--color-brand);
-    opacity: 0.85;
-    transition: opacity var(--duration-fast) var(--ease-standard);
-  }
-
-  .marker-dot {
-    fill: var(--color-canvas);
+    fill-opacity: 0.24;
+    transition: fill-opacity var(--duration-fast) var(--ease-standard);
   }
 
   .marker-label {
@@ -89,21 +98,27 @@ const markers = REGION_MARKERS.map((marker) => {
     font-family: var(--font-ui);
     font-size: 15px;
     font-weight: 500;
+    pointer-events: none;
   }
 
-  .marker-link:hover .marker,
-  .marker-link:focus-visible .marker {
-    opacity: 1;
-  }
-
-  .marker-link:focus-visible {
+  .area-link {
     outline: none;
   }
 
-  .marker-link:focus-visible .marker {
-    stroke: var(--color-interactive);
-    stroke-width: 3;
-    opacity: 1;
+  .area-link:hover .zone,
+  .area-link:focus-visible .zone {
+    fill-opacity: 0.45;
+  }
+
+  .area-link:focus-visible .marker-label {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .marker-label {
+      font-size: 26px;
+    }
   }
 
   figcaption {

@@ -1,47 +1,124 @@
 ---
+/**
+ * Indeks Sinau (PRD §7.3, §26.4): modul mandiri — tanpa learning path
+ * wajib, tanpa progress, tanpa gamifikasi (design.md §36).
+ */
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+
+const registry = await loadRegistry();
+const modules = registry
+  .getPublished()
+  .filter((entry) => entry.type === "module")
+  .sort((a, b) => a.title.localeCompare(b.title, "id"));
 ---
 
 <BaseLayout
   title="Sinau — Njawani"
-  description="Modul pembelajaran mandiri tentang bahasa dan budaya Jawa."
+  description="Modul pembelajaran mandiri tentang bahasa dan budaya Jawa — pelajari satu topik pada satu waktu."
 >
-  <section class="placeholder">
-    <p class="eyebrow">Njawani</p>
-    <h1>Sinau</h1>
-    <p>
-      Bagian ini masih kerangka awal. Modul mandiri tanpa progress dan
-      gamifikasi akan dibangun mengikuti PRD §7.3 dan §26.4.
-    </p>
-  </section>
+  <div class="sinau">
+    <header class="page-header">
+      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Sinau" }]} />
+      <h1>Sinau</h1>
+      <p class="lead">
+        Modul singkat untuk mempelajari satu topik pada satu waktu — tanpa
+        urutan wajib, tanpa poin, tanpa lencana. Pilih yang menarik, baca,
+        selesai.
+      </p>
+    </header>
+
+    <ul class="modules">
+      {
+        modules.map((module) => (
+          <li class="module-card">
+            <a href={`/sinau/${module.slug}/`}>
+              <span class="card-title">{module.title}</span>
+              {module.shortDefinition && <span class="card-definition">{module.shortDefinition}</span>}
+              <span class="card-meta">
+                {module.extra.reading_time ? `${module.extra.reading_time} menit` : "Bacaan singkat"}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </BaseLayout>
 
 <style>
-  .placeholder {
+  .sinau {
     max-width: var(--container-content);
     margin-inline: auto;
-    padding: var(--space-9) var(--space-5);
-  }
-
-  .eyebrow {
-    margin: 0 0 var(--space-4);
-    color: var(--color-text-muted);
-    font-size: 0.8125rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    padding: var(--space-7) var(--space-5) var(--space-9);
   }
 
   h1 {
-    margin: 0;
+    margin: var(--space-5) 0 0;
     font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
     font-weight: 500;
-    font-size: clamp(2.25rem, 6vw, 3rem);
     line-height: 1.08;
   }
 
-  p:not(.eyebrow) {
+  .lead {
     max-width: var(--container-reading);
-    margin: var(--space-5) 0 0;
+    margin: var(--space-4) 0 var(--space-7);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .modules {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .modules {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .module-card a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    height: 100%;
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .module-card a:hover {
+    border-color: var(--border-default);
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  .card-definition {
     color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .card-meta {
+    margin-top: auto;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
   }
 </style>

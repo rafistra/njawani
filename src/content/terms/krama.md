@@ -14,6 +14,9 @@ search_terms:
   - ragam formal
 themes:
   - bahasa
+regions:
+  - surakarta
+  - yogyakarta
 relations:
   - type: part_of
     target: unggah-ungguh

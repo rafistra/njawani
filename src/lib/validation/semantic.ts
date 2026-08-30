@@ -71,6 +71,15 @@ export function validateRegistry(registry: ContentRegistry): ValidationIssue[] {
           severity: "error",
           message: `Entri '${entry.id}' (${entry.collection}) merujuk region '${regionId}' yang tidak ada.${suggestSimilar(regionId, [...regionIds])}`,
         });
+        continue;
+      }
+      const region = registry.getEntry(regionId);
+      if (entry.status === "published" && region?.status === "draft") {
+        issues.push({
+          code: "published-to-draft",
+          severity: "error",
+          message: `Entri published '${entry.id}' merujuk region draft '${regionId}' (AGENTS.md §65).`,
+        });
       }
     }
 

@@ -15,6 +15,9 @@ search_terms:
 themes:
   - bahasa
   - etika
+regions:
+  - surakarta
+  - yogyakarta
 sources:
   - poerwadarminta-baoesastra-jawa
   - kbbi

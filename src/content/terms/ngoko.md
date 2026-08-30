@@ -30,5 +30,5 @@ Ngoko adalah ragam bahasa Jawa yang paling tidak formal. Ragam ini dipakai kepad
 
 ## Konteks
 
-Ngoko menjadi dasar bahasa Jawa: kosakata ngoko adalah bentuk dasar yang kemudian dipadankan menjadi krama. Dalam penggunaannya dikenal pula pembagian seperti ngoko lugu dan ngoko alus yang mengatur kehalusan di dalam ragam ngoko sendiri.
+Ngoko menjadi dasar bahasa Jawa: kosakata ngoko adalah bentuk dasar yang kemudian dipadankan menjadi [[krama]]. Dalam penggunaannya dikenal pula pembagian seperti ngoko lugu dan ngoko alus yang mengatur kehalusan di dalam ragam ngoko sendiri.
 

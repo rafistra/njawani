@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 
-import { COLLECTION_NAMES, SCHEMAS_BY_COLLECTION, ID_PATTERN } from "./lib/validation/schemas";
+import { SCHEMAS_BY_COLLECTION, ID_PATTERN } from "./lib/validation/schemas";
 
 /**
  * Stable ID berasal dari frontmatter `id`, bukan nama file (PRD §15.2, AGENTS.md §14).

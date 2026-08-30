@@ -90,6 +90,33 @@ describe("relation engine", () => {
       expect.objectContaining({ type: "related_to", target: "satu", derived: true }),
     );
   });
+
+  it("tidak membuat backlink published → draft dari relation entri draft (AGENTS §65)", () => {
+    const raw = [
+      ...fixture(),
+      {
+        collection: "topics",
+        id: "draf-terkait",
+        data: {
+          type: "topic",
+          title: "Draf Terkait",
+          short_definition: "x",
+          status: "draft",
+          relations: [{ type: "related_to", target: "unggah-ungguh" }],
+        },
+      },
+    ] as RawContentEntry[];
+
+    const graph = buildRelationGraph(createRegistry(raw));
+    const unggahEdges = getRelations(graph, "unggah-ungguh");
+    expect(
+      unggahEdges.filter((relation) => relation.target === "draf-terkait"),
+    ).toEqual([]);
+    // Forward edge draft → published tetap ada pada entri draft.
+    expect(getRelations(graph, "draf-terkait")).toContainEqual(
+      expect.objectContaining({ type: "related_to", target: "unggah-ungguh", derived: false }),
+    );
+  });
 });
 
 describe("validasi semantik", () => {

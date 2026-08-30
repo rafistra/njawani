@@ -28,7 +28,7 @@ catatan_rasa: >
 
 ## Pengertian
 
-Unggah-ungguh adalah sistem tingkat tutur dalam bahasa Jawa: pemilihan kosakata dan ragam bahasa yang disesuaikan dengan hubungan sosial antara pembicara dan lawan bicara. Tingkat yang paling sering dibedakan adalah **ngoko** (ragam tak formal), **madya** (ragam tengah), dan **krama** (ragam halus), ditambah **krama inggil** untuk kosakata penghormatan yang lebih tinggi.
+Unggah-ungguh adalah sistem tingkat tutur dalam bahasa Jawa: pemilihan kosakata dan ragam bahasa yang disesuaikan dengan hubungan sosial antara pembicara dan lawan bicara. Tingkat yang paling sering dibedakan adalah [[ngoko]] (ragam tak formal), **madya** (ragam tengah), dan [[krama]] (ragam halus), ditambah **krama inggil** untuk kosakata penghormatan yang lebih tinggi.
 
 ## Konteks
 

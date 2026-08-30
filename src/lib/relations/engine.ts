@@ -38,8 +38,11 @@ export function buildRelationGraph(registry: ContentRegistry): RelationGraph {
 
       const target = registry.getEntry(relation.target);
       const inverseType = def.inverse;
+      // Jangan buat backlink published → draft: entri draft boleh merujuk entri
+      // published, tetapi halaman published tidak boleh menunjuk draft (AGENTS.md §65).
+      const inverseIsPublishedToDraft = target?.status === "published" && entry.status === "draft";
       // Hindari duplikasi bila editor kebetulan juga menulis sisi inverse-nya.
-      if (!target || !hasAuthoredEquivalent(target, inverseType, entry.id)) {
+      if (!inverseIsPublishedToDraft && (!target || !hasAuthoredEquivalent(target, inverseType, entry.id))) {
         push({ source: relation.target, type: inverseType, target: entry.id, note: relation.note, derived: true });
       }
     }

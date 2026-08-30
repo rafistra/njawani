@@ -35,5 +35,5 @@ Krama adalah ragam halus dalam bahasa Jawa. Ragam ini digunakan untuk menunjukka
 
 ## Konteks
 
-Krama memiliki padanan kosakata terhadap ngoko, misalnya *dhahar* (krama) untuk *mangan* (ngoko, "makan"). Selain krama biasa, dikenal pula krama inggil untuk kosakata yang mengangkat lawan bicara, dan madya sebagai ragam tengah.
+Krama memiliki padanan kosakata terhadap [[ngoko]], misalnya *dhahar* (krama) untuk *mangan* (ngoko, "makan"). Selain krama biasa, dikenal pula krama inggil untuk kosakata yang mengangkat lawan bicara, dan madya sebagai ragam tengah.
 

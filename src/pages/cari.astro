@@ -1,0 +1,439 @@
+---
+/**
+ * Full search /cari/?q= (PRD §19.2, design.md §56): state di URL, filter
+ * ringan jenis + tema, hasil dikelompokkan. Native JS — Level 2 (AGENTS.md §6).
+ * Index Pagefind hanya ada setelah build; di dev tampilkan fallback kurasi.
+ */
+import KnowledgeCard from "../components/knowledge/KnowledgeCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadRegistry } from "../lib/content";
+import { KNOWLEDGE_TYPES } from "../lib/content/types";
+
+const registry = await loadRegistry();
+const fallbackEntries = registry
+  .getPublished()
+  .filter((entry) => (KNOWLEDGE_TYPES as readonly string[]).includes(entry.type))
+  .slice(0, 6);
+---
+
+<BaseLayout title="Cari — Njawani" description="Cari istilah, tradisi, karya sastra, atau budaya Jawa.">
+  <div class="cari">
+    <header class="page-header">
+      <h1>Cari</h1>
+      <p class="lead">Cari istilah, tradisi, karya sastra, atau budaya Jawa…</p>
+    </header>
+
+    <form class="search-form" role="search" data-search-form>
+      <label class="sr-only" for="search-input">Kata kunci pencarian</label>
+      <input
+        id="search-input"
+        type="search"
+        name="q"
+        placeholder="Cari istilah, tradisi, karya sastra, atau budaya Jawa…"
+        autocomplete="off"
+        autofocus
+        data-search-input
+      />
+    </form>
+
+    <div class="filters" data-filters hidden>
+      <fieldset class="filter-group" data-filter-group="jenis">
+        <legend>Jenis</legend>
+        <div class="filter-options"></div>
+      </fieldset>
+      <fieldset class="filter-group" data-filter-group="tema">
+        <legend>Tema</legend>
+        <div class="filter-options"></div>
+      </fieldset>
+    </div>
+
+    <p class="status" role="status" aria-live="polite" data-status></p>
+
+    <section class="results" data-results></section>
+
+    <section class="fallback" data-fallback>
+      <h2>Mulai dari sini</h2>
+      <ul class="fallback-grid">
+        {
+          fallbackEntries.map((entry) => (
+            <li>
+              <KnowledgeCard entry={entry} />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .cari {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    margin: var(--space-4) 0 0;
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+  }
+
+  .search-form input {
+    width: 100%;
+    margin-top: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: 1.125rem;
+  }
+
+  .search-form input:focus-visible {
+    outline: 2px solid var(--color-interactive);
+    outline-offset: 2px;
+  }
+
+  .filters {
+    margin-top: var(--space-5);
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .filter-group + .filter-group {
+    margin-top: var(--space-3);
+  }
+
+  .filter-group legend {
+    float: left;
+    margin-right: var(--space-3);
+    padding: 0;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .filter-options button {
+    padding: var(--space-1) var(--space-3);
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+
+  .filter-options button[aria-pressed="true"] {
+    background: var(--color-text);
+    border-color: var(--color-text);
+    color: var(--color-canvas);
+  }
+
+  .status {
+    margin: var(--space-5) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .results {
+    margin-top: var(--space-5);
+  }
+
+  .result-group + .result-group {
+    margin-top: var(--space-6);
+  }
+
+  .result-group h2 {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .result-group ul {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .result {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .result-title {
+    color: var(--color-interactive);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .result-title:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .result-jenis {
+    margin-left: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .result-definisi {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .result-excerpt {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .result-excerpt :global(mark) {
+    background: var(--color-gading-highlight, #efe6cf);
+    color: inherit;
+  }
+
+  .fallback {
+    margin-top: var(--space-8);
+  }
+
+  .fallback h2 {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .fallback-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .fallback-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+<script>
+  interface PagefindResultData {
+    url: string;
+    meta: { title?: string; jenis?: string; definisi?: string };
+    excerpt?: string;
+  }
+
+  interface PagefindApi {
+    search(
+      query: string,
+      options?: { filters?: Record<string, string[]> },
+    ): Promise<{ results: { data(): Promise<PagefindResultData> }[] }>;
+    getFilters(): Promise<Record<string, Record<string, number>>>;
+  }
+
+  const BASE = import.meta.env.BASE_URL;
+  const form = document.querySelector<HTMLFormElement>("[data-search-form]");
+  const input = document.querySelector<HTMLInputElement>("[data-search-input]");
+  const filtersRoot = document.querySelector<HTMLElement>("[data-filters]");
+  const status = document.querySelector<HTMLElement>("[data-status]");
+  const resultsRoot = document.querySelector<HTMLElement>("[data-results]");
+  const fallback = document.querySelector<HTMLElement>("[data-fallback]");
+
+  const activeFilters: Record<string, string[]> = {};
+  let pagefind: PagefindApi | undefined;
+  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function updateUrl() {
+    const params = new URLSearchParams();
+    if (input?.value) params.set("q", input.value);
+    for (const jenis of activeFilters.jenis ?? []) params.set("jenis", jenis);
+    for (const tema of activeFilters.tema ?? []) params.set("tema", tema);
+    const query = params.toString();
+    history.replaceState(null, "", query ? `/cari/?${query}` : "/cari/");
+  }
+
+  function renderResults(results: PagefindResultData[]) {
+    if (!resultsRoot) return;
+    const groups = new Map<string, PagefindResultData[]>();
+    for (const result of results) {
+      const group = result.meta.jenis ?? "Lainnya";
+      const list = groups.get(group) ?? [];
+      list.push(result);
+      groups.set(group, list);
+    }
+
+    resultsRoot.innerHTML = "";
+    for (const [group, items] of groups) {
+      const section = document.createElement("section");
+      section.className = "result-group";
+      const heading = document.createElement("h2");
+      heading.textContent = group;
+      const list = document.createElement("ul");
+      for (const item of items) {
+        const li = document.createElement("li");
+        li.className = "result";
+        const title = document.createElement("a");
+        title.className = "result-title";
+        title.href = item.url;
+        title.textContent = item.meta.title ?? item.url;
+        const jenis = document.createElement("span");
+        jenis.className = "result-jenis";
+        jenis.textContent = item.meta.jenis ?? "";
+        const definisi = document.createElement("p");
+        definisi.className = "result-definisi";
+        definisi.textContent = item.meta.definisi ?? "";
+        li.append(title, jenis, definisi);
+        if (item.excerpt) {
+          const excerpt = document.createElement("p");
+          excerpt.className = "result-excerpt";
+          excerpt.innerHTML = item.excerpt; // Excerpt dari Pagefind — aman, berasal dari konten statis sendiri.
+          li.append(excerpt);
+        }
+        list.append(li);
+      }
+      section.append(heading, list);
+      resultsRoot.append(section);
+    }
+  }
+
+  async function runSearch() {
+    if (!pagefind || !status) return;
+    const query = input?.value.trim() ?? "";
+    updateUrl();
+
+    if (!query && Object.keys(activeFilters).length === 0) {
+      status.textContent = "";
+      if (resultsRoot) resultsRoot.innerHTML = "";
+      if (fallback) fallback.hidden = false;
+      return;
+    }
+    if (fallback) fallback.hidden = true;
+
+    status.textContent = query ? "Mencari…" : "Memuat filter…";
+    const response = await pagefind.search(query, { filters: activeFilters });
+    const results = await Promise.all(response.results.slice(0, 30).map((result) => result.data()));
+    renderResults(results);
+
+    if (results.length === 0) {
+      status.textContent = query
+        ? "Belum ada topik yang cocok. Coba istilah lain atau mulai dari Jelajah."
+        : "Tidak ada entri pada filter ini.";
+    } else {
+      status.textContent = `${response.results.length} hasil`;
+    }
+  }
+
+  function renderFilterButtons(filters: Record<string, Record<string, number>>) {
+    if (!filtersRoot) return;
+    filtersRoot.hidden = false;
+    for (const [name, values] of Object.entries(filters)) {
+      const group = filtersRoot.querySelector<HTMLElement>(`[data-filter-group="${name}"] .filter-options`);
+      if (!group) continue;
+      group.innerHTML = "";
+      for (const [value, count] of Object.entries(values).sort()) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = `${value} (${count})`;
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          const list = activeFilters[name] ?? [];
+          const index = list.indexOf(value);
+          if (index >= 0) {
+            list.splice(index, 1);
+            button.setAttribute("aria-pressed", "false");
+          } else {
+            list.push(value);
+            button.setAttribute("aria-pressed", "true");
+          }
+          activeFilters[name] = list;
+          runSearch();
+        });
+        group.append(button);
+      }
+    }
+  }
+
+  function initFilterStateFromUrl() {
+    const params = new URLSearchParams(location.search);
+    if (params.get("jenis")) activeFilters.jenis = [params.get("jenis")!];
+    if (params.get("tema")) activeFilters.tema = [params.get("tema")!];
+    if (input && params.get("q")) input.value = params.get("q")!;
+  }
+
+  async function init() {
+    try {
+      pagefind = (await import(/* @vite-ignore */ `${BASE}pagefind/pagefind.js`)) as PagefindApi;
+    } catch {
+      if (status) {
+        status.textContent = "Index pencarian tersedia setelah build produksi (npm run build && npm run preview).";
+      }
+      return;
+    }
+    if (fallback) fallback.hidden = true;
+    initFilterStateFromUrl();
+    renderFilterButtons(await pagefind.getFilters());
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      runSearch();
+    });
+    input?.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(runSearch, 250);
+    });
+    await runSearch();
+  }
+
+  init();
+</script>

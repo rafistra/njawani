@@ -54,6 +54,7 @@ const navItems = [
             ))
           }
         </ul>
+        <a class="search-link" href={`${base}cari/`}>Cari</a>
       </nav>
     </header>
     <main id="konten-utama">
@@ -124,6 +125,21 @@ const navItems = [
 
   nav ul a:hover {
     color: var(--color-interactive);
+  }
+
+  .search-link {
+    color: var(--color-interactive);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-full);
+    padding: var(--space-1) var(--space-4);
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .search-link:hover {
+    border-color: var(--color-interactive);
   }
 
   main {

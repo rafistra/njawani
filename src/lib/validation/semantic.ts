@@ -7,7 +7,7 @@ import { getRelationType, RELATION_TYPE_KEYS } from "../../data/relation-types/r
 import { resolveEntryRoute } from "../content/routes";
 import type { ContentRegistry } from "../content/registry";
 import { isKnowledgeType } from "./schemas";
-import { formatIssues, suggestSimilar, type ValidationIssue } from "./errors";
+import { suggestSimilar, type ValidationIssue } from "./errors";
 
 function detectHierarchicalCycles(edges: { source: string; target: string }[]): string[][] {
   const adjacency = new Map<string, string[]>();

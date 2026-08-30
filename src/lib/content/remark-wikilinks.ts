@@ -11,7 +11,7 @@
  * bukan error — konten tetap terbaca sebagai teks.
  */
 import { visit } from "unist-util-visit";
-import type { Text, Parent } from "mdast";
+import type { Parent, Root } from "mdast";
 
 const WIKILINK_PATTERN =
   /\[\[([a-z0-9]+(?:-[a-z0-9]+)*)\|([^\]]+)\]\]|\[\[([a-z0-9]+(?:-[a-z0-9]+)*)\]\]/g;
@@ -28,9 +28,9 @@ export interface WikilinkOptions {
 export function remarkWikilinks(options: WikilinkOptions) {
   const { routeMap } = options;
 
-  return (tree: unknown, file: VFileLike) => {
-    visit(tree, "text", (node: Text, index: number | undefined, parent: Parent | undefined) => {
-      if (index === undefined || !parent) return;
+  return (tree: Root, file: VFileLike) => {
+    visit(tree, "text", (node, index, parent) => {
+      if (typeof index !== "number" || !parent) return;
       const value = node.value;
       if (!value.includes("[[")) return;
 

@@ -21,6 +21,7 @@ const BASE_PATH = "/njawani/";
  */
 function buildWikiRouteMap() {
   const contentRoot = fileURLToPath(new URL("./src/content", import.meta.url));
+  /** @type {Record<string, string>} */
   const routeMap = {};
 
   for (const collection of readdirSync(contentRoot)) {
@@ -29,7 +30,8 @@ function buildWikiRouteMap() {
       if (!file.endsWith(".md")) continue;
       const { data } = matter(readFileSync(join(collectionPath, file), "utf-8"));
       const id = typeof data.id === "string" ? data.id : undefined;
-      const prefix = typeof data.type === "string" ? ROUTE_PREFIX[data.type] : undefined;
+      const prefix =
+        typeof data.type === "string" ? ROUTE_PREFIX[/** @type {keyof typeof ROUTE_PREFIX} */ (data.type)] : undefined;
       // Hanya entri published yang boleh jadi target wiki-link — draft tidak
       // punya halaman di produksi (AGENTS.md §65).
       if (!id || !prefix || data.status !== "published") continue;

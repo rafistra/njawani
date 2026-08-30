@@ -5,7 +5,7 @@
  */
 import { createRegistry, type RawContentEntry } from "../content/registry";
 import { SCHEMAS_BY_COLLECTION, type CollectionName } from "./schemas";
-import { formatIssues, type ValidationIssue } from "./errors";
+import type { ValidationIssue } from "./errors";
 import { validateRegistry } from "./semantic";
 
 export function validateRawContent(rawEntries: RawContentEntry[]): ValidationIssue[] {

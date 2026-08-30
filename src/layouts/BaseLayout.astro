@@ -17,11 +17,19 @@ const {
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
 const navItems = [
   { href: `${base}jelajah/`, label: "Jelajah" },
   { href: `${base}kawruh/`, label: "Kawruh" },
   { href: `${base}sinau/`, label: "Sinau" },
   { href: `${base}aksara/`, label: "Aksara" },
+];
+
+const drawerItems = [
+  ...navItems,
+  { href: `${base}daerah/`, label: "Daerah" },
+  { href: `${base}cerita/`, label: "Cerita" },
 ];
 ---
 
@@ -34,6 +42,12 @@ const navItems = [
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Njawani" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -55,8 +69,30 @@ const navItems = [
             ))
           }
         </ul>
-        <SearchOverlay client:idle basePath={base} />
+        <div class="nav-actions">
+          <SearchOverlay client:idle basePath={base} />
+          <button
+            type="button"
+            class="menu-button"
+            aria-expanded="false"
+            aria-controls="menu-drawer"
+            data-menu-button
+          >
+            Menu
+          </button>
+        </div>
       </nav>
+      <div class="menu-drawer" id="menu-drawer" hidden data-menu-drawer>
+        <ul>
+          {
+            drawerItems.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </header>
     <main id="konten-utama">
       <slot />
@@ -66,6 +102,26 @@ const navItems = [
     </footer>
   </body>
 </html>
+
+<script>
+  // Mobile navigation — Level 2: native JS (AGENTS.md §6).
+  const button = document.querySelector<HTMLButtonElement>("[data-menu-button]");
+  const drawer = document.querySelector<HTMLElement>("[data-menu-drawer]");
+
+  button?.addEventListener("click", () => {
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!expanded));
+    drawer?.toggleAttribute("hidden", expanded);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && drawer && !drawer.hidden) {
+      drawer.setAttribute("hidden", "");
+      button?.setAttribute("aria-expanded", "false");
+      button?.focus();
+    }
+  });
+</script>
 
 <style>
   .skip-link {
@@ -87,6 +143,7 @@ const navItems = [
   }
 
   .site-header {
+    position: relative;
     border-bottom: 1px solid var(--border-subtle);
     background: var(--color-canvas);
   }
@@ -119,12 +176,54 @@ const navItems = [
 
   nav ul a {
     color: var(--color-text-muted);
-    font-size: 0.875rem; /* 14px — design.md §15 */
+    font-size: 0.875rem;
     text-decoration: none;
     transition: color var(--duration-fast) var(--ease-standard);
   }
 
   nav ul a:hover {
+    color: var(--color-interactive);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .menu-button {
+    display: none;
+    padding: var(--space-1) var(--space-3);
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+
+  .menu-drawer {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .menu-drawer ul {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: var(--space-3) var(--space-5) var(--space-5);
+    list-style: none;
+  }
+
+  .menu-drawer a {
+    display: block;
+    padding: var(--space-3) 0;
+    color: var(--color-text);
+    font-size: 1rem;
+    text-decoration: none;
+  }
+
+  .menu-drawer a:hover {
     color: var(--color-interactive);
   }
 
@@ -142,5 +241,15 @@ const navItems = [
     margin: 0 auto;
     color: var(--color-text-muted);
     font-size: 0.875rem;
+  }
+
+  @media (max-width: 767px) {
+    nav ul {
+      display: none;
+    }
+
+    .menu-button {
+      display: inline-block;
+    }
   }
 </style>

@@ -34,6 +34,14 @@ Markdown (src/content/*)
 - **Peta budaya & knowledge explorer** adalah SVG statis dengan anchor native —
   tanpa JavaScript, upgrade dari rencana island awal demi static-first
   (AGENTS.md §6). Penanda skematik, bukan poligon batas budaya.
+- **Penanggalan Jawa** (`src/lib/penanggalan/`) adalah lib domain murni —
+  tanpa import Astro/DOM, tanpa jam sistem — untuk aritmetika dina, pasaran,
+  weton, wuku, wulan, dan taun. Semua epoch terpusat di `anchors.ts` dengan
+  sumber per konstanta dan difiksasi lewat fixture test tanggal terdokumentasi.
+  Widget "Dina iki" di homepage memakainya via `<script>` native kecil
+  (tanpa React); fallback tanpa JS menampilkan shell + link, bukan tanggal
+  build yang basi. Mekanisme kalender dipisah tegas dari kepercayaan populer
+  yang hanya hidup di content layer (AGENTS.md §97).
 - **Search**: Pagefind diindeks postbuild (`npm run build`); filter jenis/tema
   dari metadata `data-pagefind-*` pada template entri. Non-konten dikecualikan
   lewat `data-pagefind-ignore` (prop `pagefind` di BaseLayout).

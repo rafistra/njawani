@@ -7,11 +7,12 @@
 import CulturalMap from "../components/knowledge/CulturalMap.astro";
 import KnowledgeCard from "../components/knowledge/KnowledgeCard.astro";
 import TopicLink from "../components/knowledge/TopicLink.astro";
+import DinaIki from "../components/ui/DinaIki.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { loadRegistry } from "../lib/content";
 import { buildRelationGraph } from "../lib/relations/engine";
 import { getRelatedContent } from "../lib/relations/related";
-import { withBase } from "../lib/content/routes";
+import { resolveRouteById, withBase } from "../lib/content/routes";
 
 const registry = await loadRegistry();
 const graph = buildRelationGraph(registry);
@@ -45,6 +46,9 @@ while (chain.length < 4) {
 const chainEntries = chain
   .map((id) => registry.getEntry(id))
   .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
+
+// Widget "Dina iki" menunjuk entri kawruh penanggalan — lewat resolver, bukan URL hard-code (AGENTS.md §16).
+const penanggalanUrl = resolveRouteById(registry, "penanggalan-jawa");
 ---
 
 <BaseLayout title="Njawani — Menyelami Jawa, Memahami Rasa">
@@ -60,6 +64,8 @@ const chainEntries = chain
       <span class="search-hint" aria-hidden="true">/</span>
     </a>
   </section>
+
+  <DinaIki penanggalanUrl={penanggalanUrl} />
 
   <section class="gateway" aria-label="Tiga pintu utama">
     <a class="gate" href={withBase("/jelajah/")}>

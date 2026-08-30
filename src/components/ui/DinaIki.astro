@@ -1,0 +1,140 @@
+---
+/**
+ * Widget "Dina iki" — strip kalender Jawa hari ini di homepage.
+ *
+ * Static-first (AGENTS.md §6, §8): HTML statis hanya berisi shell + link,
+ * script native kecil mengisi nilai dari tanggal lokal pengunjung lewat
+ * src/lib/penanggalan. Fallback tanpa JS jujur — kalimat statis + link ke
+ * entri kawruh, bukan tanggal build yang basi. Tanpa React, tanpa state.
+ */
+interface Props {
+  /** URL kanonik entri "Penanggalan Jawa" dari route resolver; null jika entri tidak tersedia. */
+  penanggalanUrl: string | null;
+}
+
+const { penanggalanUrl } = Astro.props;
+---
+
+<section class="dina-iki" aria-labelledby="dina-iki-title">
+  <p class="dina-iki-title" id="dina-iki-title">Dina iki</p>
+  <dl class="dina-iki-facts" data-dina-iki hidden>
+    <div class="fact">
+      <dt>Tanggal</dt>
+      <dd data-fakta="tanggal"></dd>
+    </div>
+    <div class="fact">
+      <dt>Weton</dt>
+      <dd data-fakta="weton"></dd>
+    </div>
+    <div class="fact">
+      <dt>Wuku</dt>
+      <dd data-fakta="wuku"></dd>
+    </div>
+    <div class="fact">
+      <dt>Taun Jawa</dt>
+      <dd data-fakta="taun"></dd>
+    </div>
+  </dl>
+  <p class="dina-iki-note" data-dina-iki-note>
+    Weton, wuku, dan tahun Jawa dihitung dari siklus kalender.
+  </p>
+  {
+    penanggalanUrl && (
+      <a class="dina-iki-link" href={penanggalanUrl}>Cara menghitungnya →</a>
+    )
+  }
+</section>
+
+<script>
+  import { formatTanggalMasehi, getHariJawa } from "../../lib/penanggalan";
+
+  // "Dina iki" mengikuti kalender perangkat pengunjung — keputusan zona
+  // waktu ada di layer UI; modul menerima {year, month, day} eksplisit.
+  const now = new Date();
+  const hari = getHariJawa({
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+    day: now.getDate(),
+  });
+
+  const nilai: Record<string, string> = {
+    tanggal: `${hari.dina.nama}, ${formatTanggalMasehi(hari.tanggal)}`,
+    weton: hari.weton.nama,
+    wuku: hari.wuku.nama,
+    taun: `${hari.taun.angka} ${hari.taun.nama}`,
+  };
+
+  const facts = document.querySelector<HTMLElement>("[data-dina-iki]");
+  if (facts) {
+    for (const [kunci, teks] of Object.entries(nilai)) {
+      const el = facts.querySelector<HTMLElement>(`[data-fakta="${kunci}"]`);
+      if (el) el.textContent = teks;
+    }
+    facts.hidden = false;
+    document.querySelector<HTMLElement>("[data-dina-iki-note]")?.setAttribute("hidden", "");
+  }
+</script>
+
+<style>
+  .dina-iki {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-block: var(--space-6) var(--space-8);
+  }
+
+  .dina-iki-title {
+    margin: 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .dina-iki-facts,
+  .dina-iki-note {
+    margin: var(--space-3) 0 0;
+  }
+
+  .dina-iki-facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--space-7);
+    row-gap: var(--space-2);
+  }
+
+  .fact {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .fact dt {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .fact dd {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .dina-iki-note {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .dina-iki-link {
+    display: inline-block;
+    margin-top: var(--space-3);
+    color: var(--color-interactive);
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .dina-iki-link:hover {
+    text-decoration: underline;
+  }
+</style>

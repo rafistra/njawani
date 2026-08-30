@@ -5,10 +5,10 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
 
 import matter from "gray-matter";
+import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
 import { remarkWikilinks } from "./src/lib/content/remark-wikilinks";
 import { ROUTE_PREFIX } from "./src/lib/content/routes";
-
-import react from "@astrojs/react";
 
 // Deploy target: GitHub Pages project site (AGENTS.md §19).
 // https://rafistra.github.io/njawani/ — base harus sama dengan nama repo.
@@ -49,10 +49,9 @@ export default defineConfig({
   site: SITE,
   base: BASE_PATH,
   trailingSlash: "always",
+  integrations: [react(), sitemap()],
 
   markdown: {
     remarkPlugins: [[remarkWikilinks, { routeMap: buildWikiRouteMap() }]],
   },
-
-  integrations: [react()]
 });

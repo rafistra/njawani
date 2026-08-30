@@ -46,18 +46,18 @@ Checkpoints: `feat: knowledge entry page template` → `feat: editorial knowledg
 
 Checkpoints: `feat: pagefind integration and search metadata` → `feat: full search page with filters` → `feat: quick search overlay island`
 
-## M4 — Daerah & Peta Budaya
+## M4 — Daerah & Peta Budaya ✅
 
-- [ ] Region registry + `/daerah/` index + `/daerah/{slug}/` — design.md §78
-- [ ] Peta SVG interaktif ringan (island `client:visible`), tanpa library map berat/tile eksternal
-- [ ] Fallback daftar wilayah tanpa JS
+- [x] Region registry + `/daerah/` index + `/daerah/{slug}/` — design.md §78
+- [x] Peta budaya sebagai **SVG statis** dengan anchor native — tanpa JavaScript (upgrade dari rencana React island, AGENTS §6); penanda skematik bukan poligon
+- [x] Fallback daftar wilayah selalu tampil (AGENTS §8)
 
 Checkpoints: `feat: region pages` → `feat: cultural map island with list fallback`
 
-## M5 — Jelajah
+## M5 — Jelajah ✅
 
-- [ ] `/jelajah/` index + template guided exploration (design.md §82) + 2–3 eksplorasi seed
-- [ ] Knowledge Explorer island: 1 node pusat + 5–8 tetangga, fallback list — PRD §24
+- [x] `/jelajah/` index + template guided exploration (design.md §82) + 2 eksplorasi seed
+- [x] Knowledge Explorer sebagai **SVG statis** (center node + ≤8 tetangga + label relasi, fallback list) — upgrade dari React island ke static-first (AGENTS §6)
 
 Checkpoints: `feat: jelajah index and guided explorations` → `feat: knowledge explorer island`
 
@@ -75,26 +75,27 @@ Checkpoint: `feat: sinau learning modules`
 
 Checkpoint: `feat: editorial stories`
 
-## M8 — Aksara
+## M8 — Aksara ✅
 
-- [ ] `/aksara/` hub + referensi carakan/sandhangan/pasangan/murda-swara/angka — dengan transliterasi Latin kontekstual
-- [ ] Engine transliterasi pure TS (`src/lib/transliteration/`) + tests
-- [ ] Transliterator island (input, opsi, output, copy) `client:load`
+- [x] `/aksara/` hub + referensi carakan/sandhangan/pasangan (+ murda, swara, angka) — dengan transliterasi Latin kontekstual
+- [x] Engine transliterasi pure TS (`src/lib/transliteration/`) + 9 tests — codepoint diverifikasi dari UnicodeData.txt resmi
+- [x] Transliterator island (input, output live, copy, catatan batasan) `client:load`
 
 Checkpoints: `feat: aksara reference pages` → `feat: javanese transliteration engine` → `feat: transliterator island`
 
-## M9 — Homepage & polish global
+## M9 — Homepage & polish global ✅
 
-- [ ] Semua section PRD §9 / design.md §26–27, dark section imersif
-- [ ] Mobile nav drawer, 404, meta/OG, sitemap
+- [x] Semua section PRD §9 / design.md §26–27, dark section imersif
+- [x] Mobile nav drawer, 404, meta/OG + canonical, sitemap, robots
 
 Checkpoints: `feat: homepage sections` → `feat: mobile navigation drawer` → `feat: 404 and page metadata`
 
-## M10 — Hardening & rilis MVP
+## M10 — Hardening & rilis MVP ✅
 
-- [ ] CI: check + test + build sebelum deploy
-- [ ] Audit a11y (design.md §89) + perf islands/hydration
-- [ ] Checklist sukses MVP PRD §31; update docs
+- [x] CI: check + test (termasuk validasi konten nyata) + build sebelum deploy
+- [x] A11y: skip link, focus visible, reduced motion, fallback map/explorer, lang="jv" pada glyph
+- [x] Perf: React hanya 2 island (overlay client:idle, transliterator client:load), Pagefind lazy, payload terbatas
+- [x] Checklist sukses MVP PRD §31 terpenuhi untuk konten seed; docs/architecture.md + rilis 1.0.0
 
 Checkpoints: `ci: run checks and tests before deploy` → `fix: accessibility and performance hardening` → `docs: architecture notes and mvp release`
 

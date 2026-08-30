@@ -1,0 +1,60 @@
+---
+import AksaraPage from "../../components/aksara/AksaraPage.astro";
+import GlyphTable from "../../components/aksara/GlyphTable.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SIGNS } from "../../lib/transliteration/aksara-data";
+
+const rows = [
+  { glyph: `ꦏ${SIGNS.wulu}`, latin: "kai", note: "wulu — vokal i" },
+  { glyph: `ꦏ${SIGNS.suku}`, latin: "kau", note: "suku — vokal u" },
+  { glyph: `ꦏ${SIGNS.taling}`, latin: "ké", note: "taling — vokal é" },
+  { glyph: `ꦏ${SIGNS.taling}${SIGNS.tarung}`, latin: "ko", note: "taling + tarung — vokal o" },
+  { glyph: `ꦏ${SIGNS.pepet}`, latin: "kê", note: "pepet — vokal ê (schwa)" },
+  { glyph: `ꦏ${SIGNS.cecak}`, latin: "kang", note: "cecak — konsonan -ng akhir kata" },
+  { glyph: `ꦏ${SIGNS.layar}`, latin: "kar", note: "layar — konsonan -r akhir kata" },
+  { glyph: `ꦏ${SIGNS.wigyangan}`, latin: "kah", note: "wigyangan — konsonan -h akhir kata" },
+  { glyph: `ꦏ${SIGNS.cakra}`, latin: "kra", note: "cakra — medial r" },
+  { glyph: `ꦏ${SIGNS.pengkal}`, latin: "kya", note: "pengkal — medial y" },
+  { glyph: `ꦏ${SIGNS.pangkon}`, latin: "k (mati)", note: "pangkon — mematikan vokal bawaan" },
+];
+---
+
+<BaseLayout
+  title="Sandhangan — Njawani"
+  description="Sandhangan Aksara Jawa: tanda vokal dan tanda mati yang menempel pada aksara dasar."
+  pagefind="index"
+>
+  <AksaraPage
+    title="Sandhangan"
+    lead="Sandhangan adalah tanda yang menempel pada aksara dasar untuk mengubah vokal bawaan 'a', mematikannya, atau menandai konsonan akhir. Semua tanda ditulis setelah aksara dasarnya."
+  >
+    <section>
+      <GlyphTable rows={rows} />
+    </section>
+
+    <section>
+      <h2>Catatan tentang vokal e</h2>
+      <p>
+        Bahasa Latin menulis dua bunyi "e" dengan huruf yang sama. Dalam
+        Aksara Jawa keduanya berbeda: <em>é</em> (seperti pada <em>keraton</em>)
+        memakai taling, sedangkan <em>ê</em> (pepet, seperti pada{" "}
+        <em>sêkatên</em>) memakai pepet. Saat menulis dengan huruf Latin,
+        gunakan aksen (é/è/ê) bila perlu membedakan.
+      </p>
+    </section>
+  </AksaraPage>
+</BaseLayout>
+
+<style>
+  h2 {
+    margin: var(--space-8) 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+  }
+
+  p:not(.lead) {
+    margin: var(--space-2) 0 0;
+    line-height: 1.625;
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+import AksaraPage from "../../components/aksara/AksaraPage.astro";
+import GlyphTable from "../../components/aksara/GlyphTable.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { AKSARA, AKSARA_MURDA, ANGKA, INDEPENDENT_VOWELS } from "../../lib/transliteration/aksara-data";
+
+const caraka = Object.entries(AKSARA).map(([latin, glyph]) => ({ glyph, latin }));
+const murda = Object.entries(AKSARA_MURDA).map(([latin, glyph]) => ({ glyph, latin }));
+const swara = Object.entries(INDEPENDENT_VOWELS)
+  .filter(([latin]) => ["a", "i", "u", "e", "o"].includes(latin))
+  .map(([latin, glyph]) => ({ glyph, latin: `vokal ${latin}` }));
+const angka = ANGKA.map((glyph, index) => ({ glyph, latin: String(index) }));
+---
+
+<BaseLayout
+  title="Carakan — Njawani"
+  description="20 aksara legena Aksara Jawa beserta aksara murda, aksara swara, dan angka Jawa."
+  pagefind="index"
+>
+  <AksaraPage
+    title="Carakan"
+    lead="20 aksara legena — masing-masing mewakili satu suku kata dengan vokal 'a' bawaan. Sistem ini disebut aksara wianjana."
+  >
+    <section>
+      <h2>Aksara legena</h2>
+      <GlyphTable rows={caraka} />
+    </section>
+
+    <section>
+      <h2>Aksara murda</h2>
+      <p>
+        Bentuk kehormatan dari sebagian aksara, dipakai dalam dokumen resmi
+        dan teks keraton untuk kata yang dihormati.
+      </p>
+      <GlyphTable rows={murda} />
+    </section>
+
+    <section>
+      <h2>Aksara swara</h2>
+      <p>Vokal mandiri, dipakai pada suku kata yang tidak berawalan konsonan.</p>
+      <GlyphTable rows={swara} />
+    </section>
+
+    <section>
+      <h2>Angka Jawa</h2>
+      <p>Bilangan 0–9, dibaca sama dengan padanan Latinnya.</p>
+      <GlyphTable rows={angka} />
+    </section>
+  </AksaraPage>
+</BaseLayout>
+
+<style>
+  section + section {
+    margin-top: var(--space-8);
+  }
+
+  h2 {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+  }
+
+  p:not(.lead) {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+/**
+ * Tabel glyph aksara — kolom glyph dirender dengan font Aksara Jawa dan
+ * selalu disertai transliterasi Latin (AGENTS.md §47).
+ */
+interface GlyphRow {
+  glyph: string;
+  latin: string;
+  note?: string;
+}
+
+interface Props {
+  rows: GlyphRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<ul class="glyph-table">
+  {
+    rows.map((row) => (
+      <li class="glyph-row">
+        <span class="glyph" lang="jv">
+          {row.glyph}
+        </span>
+        <span class="latin">{row.latin}</span>
+        {row.note && <span class="note">{row.note}</span>}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .glyph-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .glyph-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+  }
+
+  .glyph {
+    font-family: var(--font-javanese);
+    font-size: 1.875rem;
+    line-height: 1.2;
+    color: var(--color-text);
+  }
+
+  .latin {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .note {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+</style>

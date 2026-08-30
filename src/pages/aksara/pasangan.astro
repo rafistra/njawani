@@ -1,0 +1,61 @@
+---
+import AksaraPage from "../../components/aksara/AksaraPage.astro";
+import GlyphTable from "../../components/aksara/GlyphTable.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { transliterate } from "../../lib/transliteration";
+
+const examples = ["sambêl", "ngêlmu", "mangan", "bapak"].map((word) => ({
+  glyph: transliterate(word),
+  latin: word,
+}));
+---
+
+<BaseLayout
+  title="Pasangan — Njawani"
+  description="Pasangan Aksara Jawa: bentuk kecil aksara di bawah aksara lain, dan cara terbentuknya dalam Unicode."
+  pagefind="index"
+>
+  <AksaraPage
+    title="Pasangan"
+    lead="Ketika satu aksara langsung diikuti aksara lain tanpa vokal di antaranya, aksara kedua dirender sebagai pasangan — bentuk kecil yang menempel di bawah aksara sebelumnya."
+  >
+    <section>
+      <h2>Cara terbentuknya</h2>
+      <p>
+        Dalam Unicode, pasangan tidak punya codepoint tersendiri. Ia terbentuk
+        dari aksara dasar yang didahului <strong>pangkon</strong> — shaper
+        (misalnya font Noto Sans Javanese) kemudian menampilkan aksara
+        berikutnya sebagai bentuk kecil di bawah. Karena itu pasangan selalu
+        muncul dalam konteks kata, tidak berdiri sendiri.
+      </p>
+
+      <h2>Contoh dalam kata</h2>
+      <p>
+        Contoh berikut di-generate oleh engine transliterasi situs ini,
+        sehingga selalu konsisten dengan alat transliterasinya.
+      </p>
+      <GlyphTable rows={examples} />
+
+      <h2>Catatan</h2>
+      <p>
+        Untuk medial <em>r</em> dan <em>y</em> yang diikuti vokal, ortografi
+        memakai cakra dan pengkal alih-alih pasangan — lihat halaman
+        Sandhangan.
+      </p>
+    </section>
+  </AksaraPage>
+</BaseLayout>
+
+<style>
+  h2 {
+    margin: var(--space-7) 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+  }
+
+  p:not(.lead) {
+    margin: var(--space-2) 0 0;
+    line-height: 1.625;
+  }
+</style>

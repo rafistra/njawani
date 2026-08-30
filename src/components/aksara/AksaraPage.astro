@@ -1,0 +1,68 @@
+---
+/**
+ * Shell halaman referensi Aksara: header breadcrumb + judul + lead,
+ * dan lebar baca yang konsisten.
+ */
+import Breadcrumb from "../knowledge/Breadcrumb.astro";
+import type { ContentObject } from "../../lib/content/types";
+
+interface Props {
+  title: string;
+  lead: string;
+  entry?: ContentObject;
+}
+
+const { title, lead } = Astro.props;
+---
+
+<div class="aksara-page">
+  <header class="page-header">
+    <Breadcrumb
+      items={[{ label: "Beranda", href: "/" }, { label: "Aksara", href: "/aksara/" }, { label: title }]}
+    />
+    <p class="eyebrow">Aksara Jawa</p>
+    <h1>{title}</h1>
+    <p class="lead">{lead}</p>
+  </header>
+
+  <div class="aksara-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .aksara-page {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  .eyebrow {
+    margin: var(--space-5) 0 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    max-width: var(--container-reading);
+    margin: var(--space-4) 0 var(--space-7);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .aksara-body {
+    max-width: var(--container-reading);
+  }
+</style>

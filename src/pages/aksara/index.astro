@@ -1,48 +1,143 @@
 ---
+/**
+ * Hub Aksara (PRD §7.4): referensi dan alat Aksara Jawa.
+ * Aksara selalu disertai transliterasi Latin (AGENTS.md §47).
+ */
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const pages = [
+  {
+    href: "/aksara/carakan/",
+    title: "Carakan",
+    description: "20 aksara legena, aksara murda, aksara swara, dan angka Jawa.",
+  },
+  {
+    href: "/aksara/sandhangan/",
+    title: "Sandhangan",
+    description: "Tanda vokal dan tanda mati yang mengubah vokal bawaan 'a'.",
+  },
+  {
+    href: "/aksara/pasangan/",
+    title: "Pasangan",
+    description: "Bentuk kecil aksara di bawah aksara lain — dan cara terbentuknya.",
+  },
+  {
+    href: "/aksara/transliterasi/",
+    title: "Transliterasi",
+    description: "Alat konversi Latin → Aksara Jawa untuk mencoba menulis.",
+  },
+];
 ---
 
 <BaseLayout
   title="Aksara — Njawani"
-  description="Referensi dan alat Aksara Jawa: carakan, sandhangan, pasangan, dan transliterasi."
+  description="Referensi dan alat Aksara Jawa: carakan, sandhangan, pasangan, dan transliterasi Latin ke Aksara Jawa."
 >
-  <section class="placeholder">
-    <p class="eyebrow">Njawani</p>
-    <h1>Aksara</h1>
-    <p>
-      Bagian ini masih kerangka awal. Referensi carakan, sandhangan, pasangan,
-      dan transliterator Latin → Aksara Jawa akan dibangun mengikuti PRD §7.4
-      dan §26.5.
-    </p>
-  </section>
+  <div class="aksara">
+    <header class="page-header">
+      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Aksara" }]} />
+      <h1>Aksara</h1>
+      <p class="lead">
+        Aksara Jawa adalah aksara suku kata. Mulai dari carakan —{" "}
+        <span class="javanese" lang="jv">ꦲꦤꦕꦫꦏ</span> — lalu sandhangan dan
+        pasangan yang melengkapinya.
+      </p>
+    </header>
+
+    <ul class="cards">
+      {
+        pages.map((page) => (
+          <li>
+            <a href={page.href}>
+              <span class="card-title">{page.title}</span>
+              <span class="card-description">{page.description}</span>
+              <span class="card-action">Buka →</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </BaseLayout>
 
 <style>
-  .placeholder {
+  .aksara {
     max-width: var(--container-content);
     margin-inline: auto;
-    padding: var(--space-9) var(--space-5);
-  }
-
-  .eyebrow {
-    margin: 0 0 var(--space-4);
-    color: var(--color-text-muted);
-    font-size: 0.8125rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    padding: var(--space-7) var(--space-5) var(--space-9);
   }
 
   h1 {
-    margin: 0;
+    margin: var(--space-5) 0 0;
     font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
     font-weight: 500;
-    font-size: clamp(2.25rem, 6vw, 3rem);
     line-height: 1.08;
   }
 
-  p:not(.eyebrow) {
+  .lead {
     max-width: var(--container-reading);
-    margin: var(--space-5) 0 0;
+    margin: var(--space-4) 0 var(--space-7);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .javanese {
+    font-family: var(--font-javanese);
+    color: var(--color-brand);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .cards a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    height: 100%;
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .cards a:hover {
+    border-color: var(--border-default);
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .card-description {
     color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .card-action {
+    margin-top: auto;
+    color: var(--color-interactive);
+    font-size: 0.875rem;
+    font-weight: 500;
   }
 </style>

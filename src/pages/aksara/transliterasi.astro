@@ -1,0 +1,60 @@
+---
+import Transliterator from "../../components/interactive/Transliterator";
+import AksaraPage from "../../components/aksara/AksaraPage.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Transliterasi — Njawani"
+  description="Alat transliterasi Latin → Aksara Jawa: tulis dalam huruf Latin, lihat hasilnya dalam carakan."
+>
+  <AksaraPage
+    title="Transliterasi"
+    lead="Tulis dalam huruf Latin dan lihat hasilnya dalam Aksara Jawa. Alat ini berjalan sepenuhnya di peramban — tanpa server."
+  >
+    <Transliterator client:load />
+
+    <section class="notes">
+      <h2>Batasan alat</h2>
+      <ul>
+        <li>
+          Vokal "e" dalam bahasa Latin ambigu: tanpa aksen, alat menuliskannya
+          sebagai <em>é</em> (taling). Untuk e pepet, tulis <em>ê</em> atau{" "}
+          <em>è</em>.
+        </li>
+        <li>
+          Aksara murda dan aksara rekan belum dihasilkan otomatis — gunakan
+          halaman Carakan sebagai rujukan.
+        </li>
+        <li>
+          Untuk kata ambigu, hasil sebaiknya dicek ulang dengan rujukan
+          pedoman aksara.
+        </li>
+      </ul>
+    </section>
+  </AksaraPage>
+</BaseLayout>
+
+<style>
+  .notes {
+    margin-top: var(--space-7);
+  }
+
+  h2 {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  ul {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
+  }
+
+  li {
+    margin-top: var(--space-2);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+</style>

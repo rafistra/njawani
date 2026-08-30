@@ -1,0 +1,102 @@
+/* Transliterator UI — desain kalem, prioritas keterbacaan (design.md §61). */
+
+.transliterator {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .transliterator {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.pane label {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.pane textarea {
+  width: 100%;
+  padding: var(--space-3);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.pane textarea:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.hint kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+}
+
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.output-header button {
+  padding: var(--space-1) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  color: var(--color-interactive);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.output-header button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.output {
+  min-height: 6rem;
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--color-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-javanese);
+  font-size: 1.75rem;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.placeholder {
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+}

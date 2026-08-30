@@ -1,0 +1,121 @@
+---
+/**
+ * Indeks Cerita (PRD §8.2): editorial story — bukan artikel database,
+ * tapi bacaan kontekstual yang menghubungkan pengetahuan (design.md §83).
+ */
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+
+const registry = await loadRegistry();
+const stories = registry
+  .getPublished()
+  .filter((entry) => entry.type === "article")
+  .sort((a, b) => a.title.localeCompare(b.title, "id"));
+---
+
+<BaseLayout
+  title="Cerita — Njawani"
+  description="Bacaan editorial tentang bahasa, sastra, dan budaya Jawa — konteks dan rasa di balik fakta."
+>
+  <div class="cerita">
+    <header class="page-header">
+      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Cerita" }]} />
+      <h1>Cerita</h1>
+      <p class="lead">
+        Bacaan pendek tentang konteks dan rasa di balik pengetahuan —
+        cara melihat, bukan hanya fakta.
+      </p>
+    </header>
+
+    <ul class="stories">
+      {
+        stories.map((story) => (
+          <li class="story-item">
+            <a href={`/cerita/${story.slug}/`}>
+              <span class="story-eyebrow">Cerita · {story.themes.join(", ")}</span>
+              <span class="story-title">{story.title}</span>
+              {story.shortDefinition && <span class="story-dek">{story.shortDefinition}</span>}
+              <span class="story-action">Baca →</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .cerita {
+    max-width: var(--container-reading);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  h1 {
+    margin: var(--space-5) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    margin: var(--space-4) 0 var(--space-7);
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+  }
+
+  .stories {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .story-item a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6) 0;
+    border-top: 1px solid var(--border-subtle);
+    text-decoration: none;
+  }
+
+  .story-eyebrow {
+    color: var(--color-brand);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .story-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-text);
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .story-item a:hover .story-title {
+    color: var(--color-interactive);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .story-dek {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .story-action {
+    margin-top: var(--space-2);
+    color: var(--color-interactive);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+</style>

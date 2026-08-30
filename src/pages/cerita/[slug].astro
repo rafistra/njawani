@@ -1,0 +1,129 @@
+---
+/**
+ * Template editorial story /cerita/{slug}/ (design.md §83): eyebrow,
+ * headline, dek, lead, isi dengan pull quote, contextual links.
+ * Bacaan panjang memakai reading width terbatas.
+ */
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import { capitalize } from "../../lib/content/labels";
+import type { ContentObject } from "../../lib/content/types";
+
+export async function getStaticPaths() {
+  const registry = await loadRegistry();
+  const rawArticles = await getCollection("articles");
+  const rawById = new Map(rawArticles.map((raw) => [raw.id, raw]));
+
+  return registry
+    .getPublished()
+    .filter((entry) => entry.type === "article")
+    .map((entry) => ({
+      params: { slug: entry.slug },
+      props: { entry, raw: rawById.get(entry.id)! },
+    }));
+}
+
+interface Props {
+  entry: ContentObject;
+  raw: CollectionEntry<"articles">;
+}
+
+const { entry, raw } = Astro.props;
+const registry = await loadRegistry();
+const { Content } = await render(raw);
+---
+
+<BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition} pagefind="index">
+  <article class="story">
+    <header class="story-header">
+      <Breadcrumb
+        items={[{ label: "Beranda", href: "/" }, { label: "Cerita", href: "/cerita/" }, { label: entry.title }]}
+      />
+      <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">
+        Cerita{entry.themes.length > 0 && ` · ${entry.themes.map((theme) => capitalize(theme)).join(", ")}`}
+      </p>
+      <h1 class="story-title" data-pagefind-weight="5">{entry.title}</h1>
+      {entry.shortDefinition && (
+        <p class="dek" data-pagefind-meta="definisi" data-pagefind-weight="3">{entry.shortDefinition}</p>
+      )}
+    </header>
+
+    <div class="story-body" data-pagefind-body>
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .story {
+    max-width: var(--container-reading);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  .eyebrow {
+    margin: var(--space-5) 0 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .story-title {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.125rem, 4.5vw, 2.75rem);
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  .dek {
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .story-body {
+    margin-top: var(--space-7);
+  }
+
+  .story-body :global(p) {
+    margin: var(--space-5) 0 0;
+    line-height: 1.7;
+  }
+
+  .story-body :global(p:first-of-type) {
+    margin-top: 0;
+    font-size: 1.125rem;
+    line-height: 1.65;
+  }
+
+  .story-body :global(blockquote) {
+    margin: var(--space-7) 0;
+    padding-left: var(--space-5);
+    border-left: 3px solid var(--color-brand-soft);
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .story-body :global(a) {
+    color: var(--color-interactive);
+    text-decoration: underline;
+    text-decoration-color: var(--border-default);
+    text-underline-offset: 3px;
+  }
+
+  .story-body :global(a:hover) {
+    text-decoration-color: var(--color-interactive);
+  }
+</style>

@@ -38,11 +38,11 @@ Checkpoints: `feat: content collections with typed schemas` → `feat: content r
 
 Checkpoints: `feat: knowledge entry page template` → `feat: editorial knowledge components` → `feat: kawruh index with filters` → `feat: wiki-style internal links` → `feat: related content ranking`
 
-## M3 — Search (Pagefind)
+## M3 — Search (Pagefind) ✅
 
-- [ ] Pagefind postbuild + metadata ranking (title > aliases > terms > short definition)
-- [ ] `/cari/` full search: state URL, filter, grouping
-- [ ] Quick search overlay: React island pertama — keyboard, Escape, focus restore
+- [x] Pagefind postbuild + metadata ranking (title > aliases > terms > short definition)
+- [x] `/cari/` full search: state URL, filter, grouping
+- [x] Quick search overlay: React island pertama — keyboard, Escape, focus restore
 
 Checkpoints: `feat: pagefind integration and search metadata` → `feat: full search page with filters` → `feat: quick search overlay island`
 

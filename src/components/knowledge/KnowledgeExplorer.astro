@@ -1,0 +1,188 @@
+---
+/**
+ * Knowledge Explorer (PRD §24, design.md §58): satu node pusat + 5–8
+ * tetangga terdekat dengan label relation. Diagram SVG statis dengan
+ * anchor native — tanpa force-directed graph, tanpa JavaScript;
+ * daftar teks di bawahnya adalah fallback aksesibel.
+ */
+import { resolveEntryRoute } from "../../lib/content/routes";
+import type { ContentObject } from "../../lib/content/types";
+
+interface Neighbor {
+  entry: ContentObject;
+  /** Label relation Indonesia (dari relation registry). */
+  label: string;
+}
+
+interface Props {
+  center: ContentObject;
+  neighbors: Neighbor[];
+}
+
+const { center, neighbors } = Astro.props;
+
+const WIDTH = 800;
+const HEIGHT = 420;
+const CX = WIDTH / 2;
+const CY = HEIGHT / 2;
+const RX = 290;
+const RY = 150;
+
+const positioned = neighbors.slice(0, 8).map((neighbor, index, list) => {
+  const angle = (Math.PI * 2 * index) / list.length - Math.PI / 2;
+  return {
+    ...neighbor,
+    href: resolveEntryRoute(neighbor.entry),
+    x: CX + RX * Math.cos(angle),
+    y: CY + RY * Math.sin(angle),
+  };
+});
+
+const centerHref = resolveEntryRoute(center);
+---
+
+<figure class="explorer">
+  <svg
+    viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+    role="img"
+    aria-label={`Peta relasi: ${center.title} dan ${positioned.length} pengetahuan terkait`}
+  >
+    <title>Peta relasi pengetahuan</title>
+    {
+      positioned.map((node) => (
+        <line
+          class="edge"
+          x1={CX}
+          y1={CY}
+          x2={node.x}
+          y2={node.y}
+          aria-hidden="true"
+        />
+      ))
+    }
+    {
+      centerHref && (
+        <a href={centerHref} class="center-link">
+          <g transform={`translate(${CX} ${CY})`}>
+            <title>{center.title}</title>
+            <circle class="center-node" r="52" />
+            <text class="node-label center-label" y="6" text-anchor="middle">
+              {center.title}
+            </text>
+          </g>
+        </a>
+      )
+    }
+    {
+      positioned.map((node) => (
+        <a href={node.href} class="neighbor-link">
+          <g transform={`translate(${node.x} ${node.y})`}>
+            <title>{`${node.label}: ${node.entry.title}`}</title>
+            <circle class="neighbor-node" r="42" />
+            <text class="node-label" y="5" text-anchor="middle">
+              {node.entry.title}
+            </text>
+          </g>
+        </a>
+      ))
+    }
+  </svg>
+
+  <figcaption>
+    Relasi melingkar — klik untuk membuka pengetahuan terkait.
+  </figcaption>
+
+  <ul class="explorer-list" aria-label="Daftar pengetahuan terkait">
+    {
+      positioned.map((node) => (
+        <li>
+          <span class="list-label">{node.label}</span>
+          <a href={node.href}>{node.entry.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .explorer svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .edge {
+    stroke: var(--border-default);
+    stroke-width: 1.5;
+  }
+
+  .center-node {
+    fill: var(--color-brand);
+    opacity: 0.9;
+  }
+
+  .neighbor-node {
+    fill: var(--color-surface);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+    transition: stroke var(--duration-fast) var(--ease-standard);
+  }
+
+  .center-label {
+    fill: var(--color-canvas);
+    font-size: 16px;
+  }
+
+  .node-label {
+    fill: var(--color-text);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .neighbor-link:hover .neighbor-node,
+  .neighbor-link:focus-visible .neighbor-node,
+  .center-link:hover .center-node,
+  .center-link:focus-visible .center-node {
+    stroke: var(--color-interactive);
+    stroke-width: 3;
+  }
+
+  .neighbor-link:focus-visible,
+  .center-link:focus-visible {
+    outline: none;
+  }
+
+  figcaption {
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .explorer-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+
+  .list-label {
+    display: inline-block;
+    min-width: 160px;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .explorer-list a {
+    color: var(--color-interactive);
+    text-decoration: none;
+  }
+
+  .explorer-list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

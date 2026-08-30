@@ -1,0 +1,234 @@
+---
+/**
+ * Template guided exploration /jelajah/{slug}/ (design.md §82):
+ * langkah bernomor, bebas lompat, tidak memaksa linear (PRD §7.1).
+ */
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import TopicLink from "../../components/knowledge/TopicLink.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import type { ContentObject, ExplorationStep } from "../../lib/content/types";
+
+export async function getStaticPaths() {
+  const registry = await loadRegistry();
+  const rawExplorations = await getCollection("explorations");
+  const rawById = new Map(rawExplorations.map((raw) => [raw.id, raw]));
+
+  return registry
+    .getPublished()
+    .filter((entry) => entry.type === "exploration")
+    .map((entry) => ({
+      params: { slug: entry.slug },
+      props: { entry, raw: rawById.get(entry.id)! },
+    }));
+}
+
+interface Props {
+  entry: ContentObject;
+  raw: CollectionEntry<"explorations">;
+}
+
+const { entry, raw } = Astro.props;
+const registry = await loadRegistry();
+const { Content } = await render(raw);
+
+const steps = (entry.steps ?? []).map((step: ExplorationStep) => ({
+  ...step,
+  targetEntry: step.target ? registry.getEntry(step.target) : undefined,
+}));
+
+const otherExplorations = registry
+  .getPublished()
+  .filter((candidate) => candidate.type === "exploration" && candidate.id !== entry.id);
+---
+
+<BaseLayout title={`${entry.title} — Njawani`} description={entry.shortDefinition} pagefind="index">
+  <article class="exploration">
+    <header class="exploration-header">
+      <Breadcrumb
+        items={[{ label: "Beranda", href: "/" }, { label: "Jelajah", href: "/jelajah/" }, { label: entry.title }]}
+      />
+      <p class="eyebrow" data-pagefind-filter="jenis" data-pagefind-meta="jenis">Eksplorasi</p>
+      <h1 class="exploration-title" data-pagefind-weight="5">{entry.title}</h1>
+      {entry.shortDefinition && (
+        <p class="lead" data-pagefind-meta="definisi" data-pagefind-weight="3">{entry.shortDefinition}</p>
+      )}
+    </header>
+
+    <div class="exploration-body" data-pagefind-body>
+      <div class="prose">
+        <Content />
+      </div>
+
+      <ol class="steps">
+        {
+          steps.map((step, index) => (
+            <li class="step">
+              <span class="step-number" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div class="step-content">
+                <h2 class="step-title">{step.title}</h2>
+                {step.text && <p class="step-text">{step.text}</p>}
+                {step.targetEntry && (
+                  <div class="step-target">
+                    <TopicLink entry={step.targetEntry} />
+                  </div>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    {
+      otherExplorations.length > 0 && (
+        <section class="continue" aria-label="Lanjut menjelajah">
+          <h2>Lanjut menjelajah</h2>
+          <ul>
+            {otherExplorations.map((candidate) => (
+              <li>
+                <a href={`/jelajah/${candidate.slug}/`}>{candidate.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .exploration {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  .eyebrow {
+    margin: var(--space-5) 0 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .exploration-title {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    max-width: var(--container-reading);
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .exploration-body {
+    max-width: var(--container-reading);
+    margin-top: var(--space-7);
+  }
+
+  .prose :global(p) {
+    margin: var(--space-4) 0 0;
+    line-height: 1.625;
+  }
+
+  .prose :global(blockquote) {
+    margin: var(--space-5) 0 0;
+    padding-left: var(--space-5);
+    border-left: 3px solid var(--color-brand-soft);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .step {
+    display: flex;
+    gap: var(--space-5);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .step-number {
+    color: var(--color-brand);
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .step-text {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .step-target {
+    margin-top: var(--space-3);
+  }
+
+  .continue {
+    max-width: var(--container-reading);
+    margin-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-6);
+  }
+
+  .continue h2 {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .continue ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .continue a {
+    color: var(--color-interactive);
+    text-decoration: none;
+  }
+
+  .continue a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

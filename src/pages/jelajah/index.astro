@@ -1,47 +1,197 @@
 ---
+/**
+ * Indeks Jelajah (PRD §7.1, §26.3): pintu masuk discovery — guided
+ * explorations, peta relasi, dan peta budaya.
+ */
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import CulturalMap from "../../components/knowledge/CulturalMap.astro";
+import KnowledgeExplorer from "../../components/knowledge/KnowledgeExplorer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
+import { getRelationType } from "../../data/relation-types/relation-types";
+
+const registry = await loadRegistry();
+const graph = buildRelationGraph(registry);
+
+const explorations = registry
+  .getPublished()
+  .filter((entry) => entry.type === "exploration")
+  .sort((a, b) => a.title.localeCompare(b.title, "id"));
+
+const regions = registry.getPublished().filter((entry) => entry.type === "region");
+
+// Featured explorer: unggah-ungguh sebagai node pusat dengan tetangganya.
+const center = registry.getEntry("unggah-ungguh");
+const neighbors = center
+  ? getRelations(graph, center.id).map((relation) => {
+      const entry = registry.getEntry(relation.target);
+      if (!entry) return undefined;
+      return { entry, label: getRelationType(relation.type)?.label ?? relation.type };
+    })
+  : [];
+const validNeighbors = neighbors.filter((neighbor): neighbor is NonNullable<typeof neighbor> => Boolean(neighbor));
 ---
 
 <BaseLayout
   title="Jelajah — Njawani"
-  description="Eksplorasi budaya Jawa secara tematik dan terpandu."
+  description="Temukan pengetahuan Jawa melalui eksplorasi terpandu, peta relasi, dan peta budaya."
 >
-  <section class="placeholder">
-    <p class="eyebrow">Njawani</p>
-    <h1>Jelajah</h1>
-    <p>
-      Bagian ini masih kerangka awal. Guided exploration, peta budaya, dan
-      discovery berbasis relasi akan dibangun mengikuti PRD §7.1 dan §26.3.
-    </p>
-  </section>
+  <div class="jelajah">
+    <header class="page-header">
+      <Breadcrumb items={[{ label: "Beranda", href: "/" }, { label: "Jelajah" }]} />
+      <h1>Jelajah</h1>
+      <p class="lead">
+        Menemukan pengetahuan lewat perjalanan — bukan daftar tunggu.
+        Ikuti eksplorasi terpandu, lacak relasi antarkonsep, atau jelajahi
+        peta budaya.
+      </p>
+    </header>
+
+    <section aria-label="Eksplorasi terpandu">
+      <h2>Eksplorasi terpandu</h2>
+      <ul class="explorations">
+        {
+          explorations.map((exploration) => (
+            <li class="exploration-card">
+              <a href={`/jelajah/${exploration.slug}/`}>
+                <span class="card-eyebrow">{exploration.steps?.length ?? 0} langkah</span>
+                <span class="card-title">{exploration.title}</span>
+                {exploration.shortDefinition && (
+                  <span class="card-definition">{exploration.shortDefinition}</span>
+                )}
+                <span class="card-action">Mulai jelajah →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {
+      center && validNeighbors.length > 0 && (
+        <section class="explorer-section" aria-label="Peta relasi">
+          <h2>Mulai dari satu topik</h2>
+          <p class="section-note">
+            Setiap pengetahuan terhubung. Pilih satu node dan lihat ke mana
+            perjalananmu bisa berlanjut.
+          </p>
+          <KnowledgeExplorer center={center} neighbors={validNeighbors} />
+        </section>
+      )
+    }
+
+    <section class="map-section" aria-label="Peta budaya">
+      <h2>Jelajahi berdasarkan wilayah</h2>
+      <CulturalMap regions={regions} />
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .placeholder {
-    max-width: var(--container-content);
+  .jelajah {
+    max-width: var(--container-wide);
     margin-inline: auto;
-    padding: var(--space-9) var(--space-5);
-  }
-
-  .eyebrow {
-    margin: 0 0 var(--space-4);
-    color: var(--color-text-muted);
-    font-size: 0.8125rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    padding: var(--space-7) var(--space-5) var(--space-9);
   }
 
   h1 {
-    margin: 0;
+    margin: var(--space-5) 0 0;
     font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
     font-weight: 500;
-    font-size: clamp(2.25rem, 6vw, 3rem);
     line-height: 1.08;
   }
 
-  p:not(.eyebrow) {
+  .lead {
     max-width: var(--container-reading);
-    margin: var(--space-5) 0 0;
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  h2 {
+    margin: var(--space-8) 0 0;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 500;
+  }
+
+  .section-note {
+    max-width: var(--container-reading);
+    margin: var(--space-2) 0 var(--space-5);
     color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .explorations {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 768px) {
+    .explorations {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .exploration-card a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    height: 100%;
+    padding: var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .exploration-card a:hover {
+    border-color: var(--border-default);
+  }
+
+  .card-eyebrow {
+    color: var(--color-brand);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-text);
+  }
+
+  .card-definition {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .card-action {
+    margin-top: auto;
+    color: var(--color-interactive);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .explorer-section,
+  .map-section {
+    margin-top: var(--space-8);
+  }
+
+  .map-section :global(figure) {
+    margin-top: var(--space-5);
   }
 </style>

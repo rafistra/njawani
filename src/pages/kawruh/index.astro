@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Kawruh — Njawani"
+  description="Referensi pengetahuan bahasa, sastra, dan budaya Jawa."
+>
+  <section class="placeholder">
+    <p class="eyebrow">Njawani</p>
+    <h1>Kawruh</h1>
+    <p>
+      Bagian ini masih kerangka awal. Indeks pengetahuan dan entri kanonik akan
+      dibangun dari konten Markdown dengan relation engine — PRD §7.2, §20,
+      dan §26.2.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-9) var(--space-5);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    line-height: 1.08;
+  }
+
+  p:not(.eyebrow) {
+    max-width: var(--container-reading);
+    margin: var(--space-5) 0 0;
+    color: var(--color-text-muted);
+  }
+</style>

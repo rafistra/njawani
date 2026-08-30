@@ -1,0 +1,72 @@
+/*
+  Design tokens — mengikuti design.md (§5–11, §19, §21, §87, §88).
+  design.md adalah source of truth visual (AGENTS.md §35):
+  tambah/ubah token hanya setelah nilainya diperbarui di design.md.
+*/
+
+:root {
+  /* Typography (design.md §12) */
+  --font-display: "Newsreader", Georgia, serif;
+  --font-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-javanese: "Noto Sans Javanese", sans-serif;
+
+  /* Color — Gading canvas, Arang teks, Sogan brand,
+     Indigo interaksi, Bata aksen editorial, Kuningan aksen heritage (design.md §5) */
+  --color-canvas: #F5F0E6;
+  --color-surface: #FCFAF6;
+  --color-surface-soft: #E9E0D1;
+  --color-surface-dark: #26231F;
+  --color-surface-dark-soft: #312D28;
+
+  --color-text: #26231F;
+  --color-text-muted: #6A645D;
+
+  --color-brand: #744936;
+  --color-brand-dark: #493128;
+  --color-brand-soft: #C8A891;
+
+  --color-interactive: #344A5E;
+  --color-accent: #A24E3F;
+  --color-heritage: #B19461;
+
+  /* Semantic — terpisah dari warna brand (design.md §6) */
+  --color-success: #3F6B4F;
+  --color-warning: #A26A2D;
+  --color-error: #9B3F38;
+  --color-info: #3C6178;
+
+  /* Border — border diutamakan daripada shadow (design.md §9) */
+  --border-subtle: rgba(38, 35, 31, 0.14);
+  --border-default: rgba(38, 35, 31, 0.24);
+  --border-strong: rgba(38, 35, 31, 0.42);
+
+  /* Radius kecil — hindari estetika rounded SaaS (design.md §11) */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 999px;
+
+  /* Spacing 8pt (design.md §19) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Container (design.md §21) */
+  --container-wide: 1280px;
+  --container-content: 1040px;
+  --container-reading: 720px;
+
+  /* Interaction (design.md §88) */
+  --duration-fast: 160ms;
+  --duration-default: 240ms;
+  --duration-slow: 420ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

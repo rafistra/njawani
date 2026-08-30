@@ -1,0 +1,141 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Njawani — platform pengetahuan Jawa: bahasa, sastra, dan budaya.",
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const navItems = [
+  { href: `${base}jelajah/`, label: "Jelajah" },
+  { href: `${base}kawruh/`, label: "Kawruh" },
+  { href: `${base}sinau/`, label: "Sinau" },
+  { href: `${base}aksara/`, label: "Aksara" },
+];
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Plus+Jakarta+Sans:wght@400..700&family=Noto+Sans+Javanese:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#konten-utama">Langsung ke konten utama</a>
+    <header class="site-header">
+      <nav aria-label="Navigasi utama">
+        <a class="wordmark" href={base}>Njawani</a>
+        <ul>
+          {
+            navItems.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+    <main id="konten-utama">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>Njawani — Menyelami Jawa, Memahami Rasa</p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    inset-inline-start: var(--space-4);
+    top: var(--space-2);
+    z-index: 10;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  .site-header {
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--color-canvas);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav ul a {
+    color: var(--color-text-muted);
+    font-size: 0.875rem; /* 14px — design.md §15 */
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  nav ul a:hover {
+    color: var(--color-interactive);
+  }
+
+  main {
+    min-height: 60vh;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .site-footer p {
+    max-width: var(--container-wide);
+    margin: 0 auto;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+</style>

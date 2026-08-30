@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Sinau — Njawani"
+  description="Modul pembelajaran mandiri tentang bahasa dan budaya Jawa."
+>
+  <section class="placeholder">
+    <p class="eyebrow">Njawani</p>
+    <h1>Sinau</h1>
+    <p>
+      Bagian ini masih kerangka awal. Modul mandiri tanpa progress dan
+      gamifikasi akan dibangun mengikuti PRD §7.3 dan §26.4.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-9) var(--space-5);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    line-height: 1.08;
+  }
+
+  p:not(.eyebrow) {
+    max-width: var(--container-reading);
+    margin: var(--space-5) 0 0;
+    color: var(--color-text-muted);
+  }
+</style>

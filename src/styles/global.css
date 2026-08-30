@@ -1,0 +1,39 @@
+/* Base styles global — presentasi lengkap mengikuti design.md. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.625; /* 16/26 — design.md §15 */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Focus state — design.md §54 */
+:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+/* Reduced motion — design.md §67 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

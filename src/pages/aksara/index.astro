@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Aksara — Njawani"
+  description="Referensi dan alat Aksara Jawa: carakan, sandhangan, pasangan, dan transliterasi."
+>
+  <section class="placeholder">
+    <p class="eyebrow">Njawani</p>
+    <h1>Aksara</h1>
+    <p>
+      Bagian ini masih kerangka awal. Referensi carakan, sandhangan, pasangan,
+      dan transliterator Latin → Aksara Jawa akan dibangun mengikuti PRD §7.4
+      dan §26.5.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-9) var(--space-5);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    line-height: 1.08;
+  }
+
+  p:not(.eyebrow) {
+    max-width: var(--container-reading);
+    margin: var(--space-5) 0 0;
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Njawani — Menyelami Jawa, Memahami Rasa">
+  <section class="hero">
+    <p class="eyebrow">Kerangka awal</p>
+    <h1>Njawani</h1>
+    <p class="tagline">Menyelami Jawa, Memahami Rasa</p>
+    <p class="note">
+      Ini masih scaffold awal. Homepage akan dibangun mengikuti struktur
+      <code>prd.md</code> §9 dan design system <code>design.md</code>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-9) var(--space-5);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.875rem, 8vw, 5rem); /* Display XL — design.md §14 */
+    line-height: 0.98;
+  }
+
+  .tagline {
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.375rem;
+    color: var(--color-brand);
+  }
+
+  .note {
+    max-width: var(--container-reading);
+    margin: var(--space-7) 0 0;
+    color: var(--color-text-muted);
+  }
+
+  .note code {
+    font-size: 0.875em;
+  }
+</style>

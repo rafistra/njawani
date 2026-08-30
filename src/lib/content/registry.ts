@@ -50,6 +50,7 @@ const KNOWN_KEYS = new Set([
   "demo",
   "catatan_rasa",
   "mitos_konteks",
+  "steps",
 ]);
 
 function asString(value: unknown): string | undefined {
@@ -99,6 +100,19 @@ function normalizeMitosKonteks(value: unknown): ContentObject["mitosKonteks"] {
   return { kepercayaanPopuler, konteks, catatan: asString(data.catatan) };
 }
 
+function normalizeSteps(value: unknown): ContentObject["steps"] {
+  if (!Array.isArray(value)) return undefined;
+  const steps = value
+    .filter((item): item is Record<string, unknown> => typeof item === "object" && item !== null)
+    .map((item) => ({
+      title: asString(item.title) ?? "",
+      text: asString(item.text),
+      target: asString(item.target),
+    }))
+    .filter((step) => step.title.length > 0);
+  return steps.length > 0 ? steps : undefined;
+}
+
 function normalizeEntry(raw: RawContentEntry): ContentObject {
   const { data } = raw;
   const type = asString(data.type);
@@ -126,6 +140,7 @@ function normalizeEntry(raw: RawContentEntry): ContentObject {
     demo: data.demo === true,
     catatanRasa: asString(data.catatan_rasa),
     mitosKonteks: normalizeMitosKonteks(data.mitos_konteks),
+    steps: normalizeSteps(data.steps),
     extra: extractExtras(data),
   };
 }

@@ -60,7 +60,17 @@ export const moduleSchema = coreObjectSchema.extend({
   reading_time: z.number().int().positive().optional(),
 });
 
-export const explorationSchema = coreObjectSchema.extend({ type: z.literal("exploration") });
+/** Langkah guided exploration — target = stable ID entri tujuan (opsional). */
+const explorationStepSchema = z.object({
+  title: z.string().min(1),
+  text: z.string().optional(),
+  target: z.string().optional(),
+});
+
+export const explorationSchema = coreObjectSchema.extend({
+  type: z.literal("exploration"),
+  steps: z.array(explorationStepSchema).default([]),
+});
 
 /** Sumber pustaka: bentuk berbeda, tanpa status/relasi/region — reference-only (AGENTS.md §66). */
 export const sourceSchema = z.object({

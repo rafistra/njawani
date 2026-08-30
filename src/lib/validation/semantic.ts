@@ -162,6 +162,26 @@ export function validateRegistry(registry: ContentRegistry): ValidationIssue[] {
         message: `Entri kanonik published '${entry.id}' wajib memiliki minimal 1 sumber (PRD §25).`,
       });
     }
+
+    for (const step of entry.steps ?? []) {
+      if (!step.target) continue;
+      const stepTarget = registry.getEntry(step.target);
+      if (!stepTarget) {
+        issues.push({
+          code: "broken-step-target",
+          severity: "error",
+          message: `Langkah '${step.title}' pada '${entry.id}' menunjuk '${step.target}' yang tidak ada.${suggestSimilar(step.target, knownIds)}`,
+        });
+        continue;
+      }
+      if (entry.status === "published" && stepTarget.status === "draft") {
+        issues.push({
+          code: "published-to-draft",
+          severity: "error",
+          message: `Langkah '${step.title}' pada '${entry.id}' menunjuk entri draft '${step.target}' (AGENTS.md §65).`,
+        });
+      }
+    }
   }
 
   // Cycle hierarki: ikuti semua authored edge hierarchical (part_of/contains).

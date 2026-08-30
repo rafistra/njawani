@@ -59,6 +59,14 @@ export interface ResolvedRelation {
   derived: boolean;
 }
 
+/** Langkah guided exploration (design.md §82) — tidak memaksa linear. */
+export interface ExplorationStep {
+  title: string;
+  text?: string;
+  /** Stable ID entri tujuan (kawruh/region) — opsional. */
+  target?: string;
+}
+
 /** Knowledge object hasil normalisasi registry (PRD §15.1) — UI tidak membaca Markdown langsung. */
 export interface ContentObject {
   id: string;
@@ -90,6 +98,8 @@ export interface ContentObject {
     konteks: string;
     catatan?: string;
   };
+  /** Langkah guided exploration (koleksi explorations). */
+  steps?: ExplorationStep[];
   /** Field spesifik type yang tidak dinormalisasi eksplisit (mis. reading_time, period). */
   extra: Record<string, unknown>;
 }

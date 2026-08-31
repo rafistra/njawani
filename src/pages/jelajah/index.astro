@@ -5,11 +5,11 @@
  */
 import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
 import CulturalMap from "../../components/knowledge/CulturalMap.astro";
-import KnowledgeExplorer from "../../components/knowledge/KnowledgeExplorer.astro";
+import KnowledgeGraph from "../../components/interactive/KnowledgeGraph";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadRegistry } from "../../lib/content";
-import { buildRelationGraph, getRelations } from "../../lib/relations/engine";
-import { getRelationType } from "../../data/relation-types/relation-types";
+import { buildRelationGraph } from "../../lib/relations/engine";
+import { buildExplorerNeighborhood } from "../../lib/relations/explorer";
 import { withBase } from "../../lib/content/routes";
 
 const registry = await loadRegistry();
@@ -22,16 +22,10 @@ const explorations = registry
 
 const regions = registry.getPublished().filter((entry) => entry.type === "region");
 
-// Featured explorer: unggah-ungguh sebagai node pusat dengan tetangganya.
-const center = registry.getEntry("unggah-ungguh");
-const neighbors = center
-  ? getRelations(graph, center.id).map((relation) => {
-      const entry = registry.getEntry(relation.target);
-      if (!entry) return undefined;
-      return { entry, label: getRelationType(relation.type)?.label ?? relation.type };
-    })
-  : [];
-const validNeighbors = neighbors.filter((neighbor): neighbor is NonNullable<typeof neighbor> => Boolean(neighbor));
+// Featured explorer (design.md §58): unggah-ungguh sebagai titik awal.
+// Island hanya menerima neighborhood 2-hop ringkas, bukan seluruh graph.
+const EXPLORER_CENTER_ID = "unggah-ungguh";
+const explorerGraph = buildExplorerNeighborhood(graph, registry, EXPLORER_CENTER_ID);
 ---
 
 <BaseLayout
@@ -70,14 +64,14 @@ const validNeighbors = neighbors.filter((neighbor): neighbor is NonNullable<type
     </section>
 
     {
-      center && validNeighbors.length > 0 && (
+      explorerGraph && (
         <section class="explorer-section" aria-label="Peta relasi">
           <h2>Mulai dari satu topik</h2>
           <p class="section-note">
             Setiap pengetahuan terhubung. Pilih satu node dan lihat ke mana
             perjalananmu bisa berlanjut.
           </p>
-          <KnowledgeExplorer center={center} neighbors={validNeighbors} />
+          <KnowledgeGraph client:idle graph={explorerGraph} />
         </section>
       )
     }

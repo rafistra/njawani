@@ -47,6 +47,34 @@ describe("konten nyata di src/content", () => {
     const errors = issues.filter((issue) => issue.severity === "error");
     expect(errors, `Konten invalid:\n${formatIssues(errors)}`).toEqual([]);
   });
+
+  it("slendro dan pelog tersedia sebagai istilah terbit", () => {
+    const entriesById = new Map(entries.map((entry) => [entry.id, entry]));
+
+    for (const id of ["slendro", "pelog"]) {
+      expect(entriesById.get(id)).toMatchObject({
+        collection: "terms",
+        data: { type: "term", status: "published" },
+      });
+    }
+  });
+
+  it("klaster macapat dan Serat Wedhatama tersedia sebagai konten terbit", () => {
+    const entriesById = new Map(entries.map((entry) => [entry.id, entry]));
+
+    expect(entriesById.get("macapat")).toMatchObject({
+      collection: "topics",
+      data: { type: "topic", status: "published" },
+    });
+    expect(entriesById.get("serat-wedhatama")).toMatchObject({
+      collection: "works",
+      data: { type: "work", status: "published" },
+    });
+    expect(entriesById.get("mangkunegara-iv")).toMatchObject({
+      collection: "persons",
+      data: { type: "person", status: "published" },
+    });
+  });
 });
 
 describe("schemas per koleksi", () => {

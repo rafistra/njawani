@@ -57,6 +57,13 @@ export default defineConfig({
   trailingSlash: "always",
   integrations: [react(), sitemap()],
 
+  // Dev-server hanya. Mengizinkan host tunnel (cloudflared) agar dev server
+  // bisa diakses dari perangkat lain / jaringan berbeda (AGENTS.md §76).
+  server: {
+    host: true,
+    allowedHosts: [".trycloudflare.com", ".ngrok.app", ".ngrok-free.app", ".localhost"],
+  },
+
   markdown: {
     remarkPlugins: [[remarkWikilinks, { routeMap: buildWikiRouteMap() }]],
   },

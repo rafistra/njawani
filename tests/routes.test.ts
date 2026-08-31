@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { createRegistry, type RawContentEntry } from "../src/lib/content/registry";
-import { resolveEntryRoute, resolveRouteById, ROUTE_PREFIX } from "../src/lib/content/routes";
+import {
+  resolveEntryRoute,
+  resolveRouteById,
+  resolveToolRoute,
+  ROUTE_PREFIX,
+  TOOL_ROUTES,
+} from "../src/lib/content/routes";
 
 const registry = createRegistry([
   { collection: "topics", id: "tepa-slira", data: { type: "topic", title: "Tepa Slira", short_definition: "x" } },
@@ -37,5 +43,22 @@ describe("resolveEntryRoute", () => {
   it("resolveRouteById memakai registry dan fallback base '/'", () => {
     expect(resolveRouteById(registry, "tepa-slira")).toBe("/kawruh/tepa-slira/");
     expect(resolveRouteById(registry, "tidak-ada")).toBeNull();
+  });
+});
+
+describe("resolveToolRoute", () => {
+  it("memetakan ID alat ke route kanonik dengan base path", () => {
+    expect(resolveToolRoute("alat-kalender-jawa", "/")).toBe("/penanggalan/");
+    expect(resolveToolRoute("alat-kalender-jawa", "/njawani/")).toBe("/njawani/penanggalan/");
+  });
+
+  it("ID alat tidak dikenal mengembalikan null", () => {
+    expect(resolveToolRoute("tidak-ada")).toBeNull();
+  });
+
+  it("ID alat cocok dengan pola wiki-link [[id]] (remark-wikilinks)", () => {
+    for (const id of Object.keys(TOOL_ROUTES)) {
+      expect(id).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    }
   });
 });

@@ -8,7 +8,7 @@ import matter from "gray-matter";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import { remarkWikilinks } from "./src/lib/content/remark-wikilinks";
-import { ROUTE_PREFIX } from "./src/lib/content/routes";
+import { ROUTE_PREFIX, TOOL_ROUTES } from "./src/lib/content/routes";
 
 // Deploy target: GitHub Pages project site (AGENTS.md §19).
 // https://rafistra.github.io/njawani/ — base harus sama dengan nama repo.
@@ -40,6 +40,12 @@ function buildWikiRouteMap() {
       const slug = typeof data.slug === "string" ? data.slug : id;
       routeMap[id] = `${BASE_PATH}${prefix}/${slug}/`;
     }
+  }
+
+  // Halaman alat bukan entri konten — dipetakan eksplisit lewat TOOL_ROUTES
+  // agar wiki-link [[alat-*]] dari markdown tetap base-path-safe (AGENTS.md §16).
+  for (const [toolId, toolPath] of Object.entries(TOOL_ROUTES)) {
+    routeMap[toolId] = `${BASE_PATH}${toolPath}`;
   }
 
   return routeMap;

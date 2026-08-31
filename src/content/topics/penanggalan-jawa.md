@@ -38,7 +38,7 @@ Penanggalan Jawa adalah sistem penanggalan yang berjalan berdampingan dengan kal
 
 | Siklus | Panjang | Isi |
 | --- | --- | --- |
-| **Dina** | 7 hari | Senen, Selasa, Rebo, Kemis, Jemuah, Setu, Minggu — mengikuti pekan internasional |
+| **Dina** | 7 hari | Senen, Selasa, Rebo, Kemis, Jemuah, Setu, Ahad — mengikuti pekan internasional |
 | **Pasaran** | 5 hari | Legi, Pahing, Pon, Wage, Kliwon |
 | **Weton** | 35 hari | pasangan dina–pasaran, misalnya *Kemis Legi* |
 | **Wuku** | 30 × 7 = 210 hari | Sinta s.d. Watugunung — siklus *pawukon*; daftar lengkap di [[wuku-lan-wulan]] |
@@ -50,7 +50,7 @@ Weton dijelaskan lebih rinci di [[dina-lan-pasaran]]. Wulan dan taun membentuk k
 
 ## Cara menghitung
 
-Karena setiap siklus berulang dengan pola tetap, tanggal Jawa untuk tanggal Masehi mana pun bisa dihitung dengan sisa pembagian terhadap jumlah hari: pasaran dari hitungan hari mod 5, wuku dari mod 210, wulan dan taun dari tabel panjang wulan yang dihitung maju-mundur dari satu tanggal acuan. Widget **"Dina iki"** di beranda memakai cara ini.
+Karena setiap siklus berulang dengan pola tetap, tanggal Jawa untuk tanggal Masehi mana pun bisa dihitung dengan sisa pembagian terhadap jumlah hari: pasaran dari hitungan hari mod 5, wuku dari mod 210, wulan dan taun dari tabel panjang wulan yang dihitung maju-mundur dari satu tanggal acuan. Widget **"Dina iki"** di beranda dan alat [[alat-kalender-jawa|Kalender Jawa]] memakai cara ini — pilih tanggal Masehi mana pun untuk melihat padanan weton, wuku, wulan, dan taunnya.
 
 Perhitungan seperti ini adalah *penanggalan tabulasi* — aritmetika yang rapi dan bisa diverifikasi, namun bisa selisih satu hari dari penanggalan yang diumumkan kraton atau lembaga resmi untuk tahun tertentu, karena penyesuaian kurup dan pengamatan. Angka pada penanggalan lama pun sering ditulis dengan aksara dan bilangan kawi, seperti yang dibahas di [[wilangan-basa-kawi]].
 

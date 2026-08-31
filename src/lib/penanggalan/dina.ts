@@ -1,12 +1,13 @@
 /**
  * Siklus dina — pekan tujuh hari yang mengikuti pekan internasional.
- * Nama harian mengikuti entri `dina-lan-pasaran` (Senen, bukan Soma/Radite).
+ * Nama harian mengikuti entri `dina-lan-pasaran` (Senen, bukan Soma;
+ * Ahad, bukan Redite/Minggu).
  */
 import { DINA_OFFSET } from "./anchors";
 import { mod } from "./jdn";
 
-export const DINA_NAMES = ["Senen", "Selasa", "Rebo", "Kemis", "Jemuah", "Setu", "Minggu"] as const;
-const DINA_IDS = ["senen", "selasa", "rebo", "kemis", "jemuah", "setu", "minggu"] as const;
+export const DINA_NAMES = ["Senen", "Selasa", "Rebo", "Kemis", "Jemuah", "Setu", "Ahad"] as const;
+const DINA_IDS = ["senen", "selasa", "rebo", "kemis", "jemuah", "setu", "ahad"] as const;
 
 export interface Dina {
   id: (typeof DINA_IDS)[number];

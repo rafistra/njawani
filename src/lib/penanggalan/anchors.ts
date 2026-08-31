@@ -30,10 +30,19 @@ export const KURUP_ALIP_TAHUN = 1867;
 export const WUKU_EPOCH_JDN = 146;
 
 /**
- * Fase siklus harian: JDN mod 7 → 0 = Senen … 6 = Minggu, dan
+ * Fase siklus harian: JDN mod 7 → 0 = Senen … 6 = Ahad, dan
  * JDN mod 5 → 0 = Legi … 4 = Kliwon. Terverifikasi silang:
  * 27 Juni 2025 = Jemuah Kliwon, 1 Januari 2026 = Kemis Pon,
  * serta fakta struktural "Setu-Pon ana ing wuku Wugu" (jv-Wikipedia).
  */
 export const DINA_OFFSET = 0;
 export const PASARAN_OFFSET = 0;
+
+/**
+ * Batas taun Masehi rentang berlaku kurup Asapon, untuk membatasi pilihan
+ * tanggal di UI. 1 Sura selalu jatuh pertengahan tahun Masehi, jadi batas
+ * ini berlaku pada resolusi tahun — bukan bukti akurasi tiap tanggal di
+ * pinggiran rentang.
+ */
+export const TAHUN_MASEHI_MIN = 1936;
+export const TAHUN_MASEHI_MAX = 2053;

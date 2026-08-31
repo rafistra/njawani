@@ -58,3 +58,19 @@ export function resolveRouteById(
   const entry = registry.getEntry(id);
   return entry ? resolveEntryRoute(entry, base) : null;
 }
+
+/**
+ * Halaman alat bukan entri konten (tanpa frontmatter/registry) — dipetakan
+ * eksplisit di sini agar wiki-link dari markdown dan UI memakai satu sumber
+ * URL base-path-safe (AGENTS.md §16, §19). Nilai = path tanpa base; digabung
+ * ke peta wiki-link oleh astro.config.mjs.
+ */
+export const TOOL_ROUTES: Record<string, string> = {
+  "alat-kalender-jawa": "penanggalan/",
+};
+
+/** Route halaman alat berdasarkan stable ID alat, atau null bila tidak dikenal. */
+export function resolveToolRoute(id: string, base: string = astroBaseUrl()): string | null {
+  const path = TOOL_ROUTES[id];
+  return path ? withBase(path, base) : null;
+}

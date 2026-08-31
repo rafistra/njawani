@@ -10,9 +10,11 @@
 interface Props {
   /** URL kanonik entri "Penanggalan Jawa" dari route resolver; null jika entri tidak tersedia. */
   penanggalanUrl: string | null;
+  /** URL halaman alat Kalender Jawa (route statis via withBase); null untuk menyembunyikan link. */
+  kalenderUrl: string | null;
 }
 
-const { penanggalanUrl } = Astro.props;
+const { penanggalanUrl, kalenderUrl } = Astro.props;
 ---
 
 <section class="dina-iki" aria-labelledby="dina-iki-title">
@@ -41,6 +43,11 @@ const { penanggalanUrl } = Astro.props;
   {
     penanggalanUrl && (
       <a class="dina-iki-link" href={penanggalanUrl}>Cara menghitungnya →</a>
+    )
+  }
+  {
+    kalenderUrl && (
+      <a class="dina-iki-link" href={kalenderUrl}>Buka kalender →</a>
     )
   }
 </section>
@@ -132,6 +139,10 @@ const { penanggalanUrl } = Astro.props;
     color: var(--color-interactive);
     font-size: 0.9375rem;
     text-decoration: none;
+  }
+
+  .dina-iki-link + .dina-iki-link {
+    margin-left: var(--space-5);
   }
 
   .dina-iki-link:hover {

@@ -25,7 +25,7 @@ reviewed: 2026-08-31
 
 ## Konteks
 
-Kalender Jawa menggabungkan siklus tujuh hari (**dina**) — yang mengikuti pekan internasional — dengan siklus lima hari (**pasaran**). Keduanya berjalan serentak, sehingga setiap hari punya nama ganda, misalnya *Selasa Kliwon*. Satu putaran lengkap keduanya memerlukan 35 hari; kombinasi inilah yang dikenal sebagai weton.
+Kalender Jawa menggabungkan siklus tujuh hari (**dina**) — yang mengikuti pekan internasional — dengan siklus lima hari (**pasaran**). Keduanya berjalan serentak, sehingga setiap hari punya nama ganda, misalnya *Selasa Kliwon*. Satu putaran lengkap keduanya memerlukan 35 hari; kombinasi inilah yang dikenal sebagai weton. Padanan dina dan pasaran untuk tanggal mana pun bisa dicari di alat [[alat-kalender-jawa|Kalender Jawa]].
 
 ## Dina
 
@@ -37,7 +37,7 @@ Kalender Jawa menggabungkan siklus tujuh hari (**dina**) — yang mengikuti peka
 | Kemis | Kamis | |
 | Jemuah | Jumat | |
 | Setu | Sabtu | ejaan lama: Saptu |
-| Minggu | Minggu | |
+| Ahad | Minggu | juga dikenal: Redite |
 
 ## Pasaran
 

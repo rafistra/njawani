@@ -85,7 +85,7 @@ describe("siklus dina dan pasaran (dokumentasi harian)", () => {
   it("5 Juli 2020 = hari-1 wuku Sinta, Redite Pahing (epoch Dershowitz & Reingold)", () => {
     const jdn = toJdn({ year: 2020, month: 7, day: 5 });
     expect(getWuku(jdn)).toEqual({ id: "sinta", nama: "Sinta", urutan: 1, dinaWuku: 1 });
-    expect(getDina(jdn).nama).toBe("Minggu");
+    expect(getDina(jdn).nama).toBe("Ahad");
     expect(getPasaran(jdn).nama).toBe("Pahing");
   });
 

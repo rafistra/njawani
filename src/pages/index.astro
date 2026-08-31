@@ -65,7 +65,7 @@ const penanggalanUrl = resolveRouteById(registry, "penanggalan-jawa");
     </a>
   </section>
 
-  <DinaIki penanggalanUrl={penanggalanUrl} />
+  <DinaIki penanggalanUrl={penanggalanUrl} kalenderUrl={withBase("/penanggalan/")} />
 
   <section class="gateway" aria-label="Tiga pintu utama">
     <a class="gate" href={withBase("/jelajah/")}>

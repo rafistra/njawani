@@ -1,0 +1,334 @@
+/*
+  KalenderJawa — halaman kalender Jawa (design.md §61 pola transliterator,
+  §8–11 border halus di atas bayangan, radius kecil). Semua warna/spacing
+  dari tokens.css; tanpa warna baru.
+*/
+
+.kal {
+  margin: 0;
+}
+
+.kal-fallback {
+  margin: 0;
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  max-width: 42rem;
+  line-height: 1.6;
+}
+
+/* ---------- baris kontrol tanggal ---------- */
+
+.kal-kontrol {
+  max-width: 34rem;
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.kal-label {
+  display: block;
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kal-kontrol-baris {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--space-3);
+}
+
+.kal-kontrol-baris input[type="date"] {
+  flex: 1 1 11rem;
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-canvas);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+}
+
+.kal-kontrol-baris button,
+.kal-navigasi-bulan button {
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-canvas);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.kal-kontrol-baris button:hover:not(:disabled),
+.kal-navigasi-bulan button:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  border-color: var(--border-strong);
+}
+
+.kal-kontrol-baris button:disabled,
+.kal-navigasi-bulan button:disabled {
+  color: var(--color-text-muted);
+  border-color: var(--border-subtle);
+  cursor: default;
+}
+
+/* Tombol −1 / +1 merapat seperti satu kelompok kecil. */
+.kal-langkah {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.kal-langkah button {
+  flex: 0 0 auto;
+  min-width: 3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- judul bulan & grid ---------- */
+
+.kal-judul-baris {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-7) 0 var(--space-4);
+}
+
+.kal-judul-bulan {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.125rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.kal-judul-bulan strong {
+  font-weight: 600;
+}
+
+/* Navigasi antar-bulan: dua tombol kecil sejajar dengan judul bulan. */
+.kal-navigasi-bulan {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.kal-navigasi-bulan button {
+  min-width: 2.75rem;
+  padding: 0 var(--space-3);
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.kal-grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.kal-grid thead th {
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kal-grid td {
+  padding: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.kal-sel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-height: 6rem;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.kal-sel:hover {
+  background: var(--color-surface-soft);
+}
+
+/* Sel terpilih: blok gading lebih gelap + garis tepi tipis, seperti
+   referensi — bukan warna aksen mencolok. */
+.kal-sel.kal-terpilih {
+  background: var(--color-surface-soft);
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+
+.kal-angka {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Penanda kecil "hari ini" — sekadar titik sogan, bukan sorotan besar. */
+.kal-titik-kini {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand);
+}
+
+.kal-pasaran,
+.kal-tanggal-jawa {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+}
+
+/* Lima titik pasaran: titik ke-urutan terisi penuh. */
+.kal-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.kal-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
+}
+
+.kal-dot-terisi {
+  background: var(--color-text);
+}
+
+.kal-wuku {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.kal-keterangan {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* ---------- panel fakta tanggal terpilih ---------- */
+
+.kal-fakta {
+  max-width: 34rem;
+  margin: var(--space-7) 0 0;
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.kal-baris {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+}
+
+.kal-baris + .kal-baris {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.kal-baris dt {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kal-baris dd {
+  margin: 0;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- util & responsif ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  .kal-dots {
+    display: none;
+  }
+
+  .kal-sel {
+    min-height: 4.5rem;
+    padding: var(--space-2);
+  }
+
+  .kal-angka {
+    font-size: 1rem;
+  }
+
+  .kal-grid thead th {
+    letter-spacing: 0.08em;
+    padding-inline: var(--space-1);
+  }
+
+  .kal-baris {
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .kal-grid thead th {
+    font-size: 0.5625rem;
+    letter-spacing: 0.04em;
+    padding-inline: 2px;
+  }
+
+  .kal-baris {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}

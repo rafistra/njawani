@@ -1,0 +1,165 @@
+---
+/**
+ * Halaman Kalender Jawa — halaman alat (pola aksara/transliterasi):
+ * island React untuk interaksi, konten statis "cara membaca" tetap
+ * terbaca tanpa JS (AGENTS.md §6, §8). Link entri kawruh lewat route
+ * resolver, bukan URL hard-code (§16).
+ */
+import KalenderJawa from "../../components/interactive/KalenderJawa";
+import Breadcrumb from "../../components/knowledge/Breadcrumb.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRegistry } from "../../lib/content";
+import { resolveRouteById, withBase } from "../../lib/content/routes";
+
+const registry = await loadRegistry();
+const penanggalanUrl = resolveRouteById(registry, "penanggalan-jawa");
+---
+
+<BaseLayout
+  title="Kalender Jawa — Njawani"
+  description="Konversi tanggal Masehi ke penanggalan Jawa: weton, wuku, wulan, dan taun Jawa untuk setiap hari."
+  pagefind="index"
+>
+  {/* data-pagefind-body: skope indeks Pagefind ke konten halaman ini (pola
+      template detail) — tanpa ini halaman diabaikan karena template detail
+      sudah membawa atribut yang sama. Island di bawahnya di-ignore agar
+      teks fallback pra-hidrasi tidak masuk indeks. */}
+  <div class="halaman" data-pagefind-body>
+    <header class="page-header">
+      <Breadcrumb
+        items={[{ label: "Beranda", href: withBase("/") }, { label: "Penanggalan" }]}
+      />
+      <p class="eyebrow">Penanggalan Jawa</p>
+      <h1>Kalender Jawa</h1>
+      <p class="lead">
+        Pilih tanggal Masehi dan lihat padanannya dalam penanggalan Jawa —
+        weton, wuku, hingga taun. Perhitungan berjalan sepenuhnya di
+        peramban, tanpa server.
+      </p>
+    </header>
+
+    {/* Island dikecualikan dari indeks Pagefind: teks fallback pra-hidrasi
+        bukan konten cari — header, lead, dan "Cara membaca" yang diindeks. */}
+    <section aria-label="Kalender interaktif" data-pagefind-ignore>
+      <KalenderJawa client:load />
+    </section>
+
+    <section class="cara-membaca">
+      <h2>Cara membaca</h2>
+      <dl>
+        <div>
+          <dt>Pasaran</dt>
+          <dd>
+            Lima titik kecil menandai posisi hari dalam siklus pasaran
+            Legi–Pahing–Pon–Wage–Kliwon yang berputar tiap lima hari.
+          </dd>
+        </div>
+        <div>
+          <dt>Tanggal jawa</dt>
+          <dd>
+            Angka dan nama wulan kalender lunar Jawa — misalnya 17 Mulud
+            berarti hari ke-17 wulan Mulud.
+          </dd>
+        </div>
+        <div>
+          <dt>Wuku</dt>
+          <dd>
+            Nama pekan tujuh hari dalam siklus pawukon 210 hari. Setiap
+            wuku diawali hari Ahad, sehingga labelnya selalu muncul di
+            kolom paling kiri.
+          </dd>
+        </div>
+      </dl>
+      <p>
+        Kalender ini dihitung dengan aritmetika siklus pada rentang kurup
+        Asapon, sekitar 1936–2053 M, dan bisa selisih satu hari dari
+        penanggalan praktik (kraton/rukyaat) pada tahun tertentu.
+        {
+          penanggalanUrl && (
+            <>
+              {" "}Penjelasan lengkap tiap siklus ada di entri{" "}
+              <a href={penanggalanUrl}>Penanggalan Jawa</a>.
+            </>
+          )
+        }
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .halaman {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5) var(--space-9);
+  }
+
+  .eyebrow {
+    margin: var(--space-5) 0 0;
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: var(--space-3) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .lead {
+    max-width: var(--container-reading);
+    margin: var(--space-4) 0 var(--space-7);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .cara-membaca {
+    max-width: var(--container-reading);
+    margin-top: var(--space-8);
+  }
+
+  .cara-membaca h2 {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .cara-membaca dl {
+    margin: var(--space-4) 0 0;
+  }
+
+  .cara-membaca dl div + div {
+    margin-top: var(--space-4);
+  }
+
+  .cara-membaca dt {
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .cara-membaca dd {
+    margin: var(--space-1) 0 0;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .cara-membaca p {
+    margin: var(--space-5) 0 0;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .cara-membaca a {
+    color: var(--color-interactive);
+  }
+</style>

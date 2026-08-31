@@ -1,7 +1,7 @@
 /**
  * Siklus wuku (pawukon) — 30 pekan × 7 hari = 210 hari, bernomor ulang
  * tiap putaran (siklus tak bernomor, tidak terikat taun). Setiap wuku
- * dimulai hari Minggu; nama versi Jawa mengikuti jv-Wikipedia "Wuku"
+ * dimulai hari Ahad; nama versi Jawa mengikuti jv-Wikipedia "Wuku"
  * (beda ejaan dari versi Bali: Wukir/Ukir, Kurantil/Kulantir, dst.).
  */
 import { WUKU_EPOCH_JDN } from "./anchors";
@@ -79,7 +79,7 @@ export interface Wuku {
   id: (typeof WUKU_IDS)[number];
   nama: (typeof WUKU_NAMES)[number];
   urutan: number; // 1..30
-  /** Posisi hari di dalam wuku, 1..7 (1 = Minggu). */
+  /** Posisi hari di dalam wuku, 1..7 (1 = Ahad). */
   dinaWuku: number;
 }
 

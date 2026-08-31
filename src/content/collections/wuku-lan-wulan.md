@@ -34,9 +34,9 @@ reviewed: 2026-08-31
 
 ## Konteks
 
-Selain pasangan [[dina-lan-pasaran]] yang membentuk weton, penanggalan Jawa (lihat [[penanggalan-jawa]]) mengenal dua lapis waktu lagi. **Wuku** adalah pekan tujuh hari dalam siklus *pawukon* 210 hari: 30 wuku yang berputar tanpa nomor urut tahun — setiap wuku selalu diawali hari Minggu. **Wulan** adalah bulan dalam kalender lunar Jawa: dua belas wulan dengan panjang bergantian 29–30 hari, sehingga satu taun berumur 354 hari (355 pada *taun basa*).
+Selain pasangan [[dina-lan-pasaran]] yang membentuk weton, penanggalan Jawa (lihat [[penanggalan-jawa]]) mengenal dua lapis waktu lagi. **Wuku** adalah pekan tujuh hari dalam siklus *pawukon* 210 hari: 30 wuku yang berputar tanpa nomor urut tahun — setiap wuku selalu diawali hari Ahad. **Wulan** adalah bulan dalam kalender lunar Jawa: dua belas wulan dengan panjang bergantian 29–30 hari, sehingga satu taun berumur 354 hari (355 pada *taun basa*).
 
-Ejaan nama wuku bervariasi antar sumber — *Landep* juga ditulis *Landhep*, *Warigadadi* juga *Warigadian* — dan sebagian bernama lain dalam versi Bali. Daftar di bawah memakai ejaan yang sama dengan penanggalan yang dipakai situs ini.
+Ejaan nama wuku bervariasi antar sumber — *Landep* juga ditulis *Landhep*, *Warigadadi* juga *Warigadian* — dan sebagian bernama lain dalam versi Bali. Daftar di bawah memakai ejaan yang sama dengan penanggalan yang dipakai situs ini. Wuku dan wulan yang berlaku pada tanggal tertentu bisa dilihat langsung di alat [[alat-kalender-jawa|Kalender Jawa]].
 
 ## Wuku
 
